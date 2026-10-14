@@ -1,0 +1,959 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teste de Travas Mentais | Terapeuta Bárbara Vieira</title>
+<meta name="description" content="Descubra quais travas mentais estão te impedindo de avançar. Teste da Terapeuta Bárbara Vieira.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --musgo:#22362C;      /* texto principal e títulos */
+  --musgo-2:#3C5446;    /* texto secundário */
+  --salvia:#7E9A86;     /* barras comuns do gráfico */
+  --salvia-clara:#E4EBE3;/* superfícies suaves */
+  --dourado:#A9813C;    /* destaque, botões */
+  --dourado-claro:#F1E6CF;
+  --papel:#FBFAF7;      /* fundo */
+  --linha:#D8DED6;
+  --erro:#A23B2A;
+  --nivel-alta:#B4443B;   /* vermelho: travas altas */
+  --nivel-media:#3D6E95;  /* azul: travas médias */
+  --nivel-baixa:#4C7A50;  /* verde: travas baixas */
+  --serif:"Cormorant Garamond", "Cormorant", Garamond, "Times New Roman", serif;
+  --sans:"Figtree", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--papel);color:var(--musgo);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--dourado)}
+:focus-visible{outline:3px solid var(--dourado);outline-offset:2px}
+[hidden]{display:none!important}
+
+/* ---------- topo ---------- */
+.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1080px;margin:0 auto;padding:22px 24px}
+.marca{text-decoration:none;color:var(--musgo);display:flex;flex-direction:column;line-height:1}
+.marca i{font-family:var(--serif);font-style:italic;color:var(--dourado);font-size:20px}
+.marca b{font-family:var(--serif);font-weight:600;font-size:28px;letter-spacing:.01em}
+.topo .sair{background:none;border:1px solid var(--linha);border-radius:999px;padding:8px 16px;cursor:pointer;font-size:15px}
+
+main{max-width:1080px;margin:0 auto;padding:0 24px 64px}
+.demo{max-width:1080px;margin:12px auto 8px;padding:10px 24px;font-size:14px;color:var(--musgo-2);background:var(--dourado-claro);border-radius:10px}
+
+/* ---------- abertura ---------- */
+.abertura{display:grid;grid-template-columns:1.25fr 1fr;gap:56px;align-items:start;padding-top:28px}
+.abertura h1{font-family:var(--serif);font-weight:500;font-size:clamp(46px,7vw,84px);line-height:.95;margin:0 0 18px;letter-spacing:-.01em}
+.abertura .sub{font-family:var(--serif);font-style:italic;font-size:clamp(22px,2.6vw,28px);color:var(--dourado);margin:0 0 26px}
+.abertura p{max-width:60ch;color:var(--musgo-2);margin:0 0 14px}
+.abertura .assinatura{margin-top:22px;font-family:var(--serif);font-size:20px;color:var(--musgo)}
+.escala-amostra{display:flex;gap:6px;margin:30px 0 0;align-items:flex-end;height:70px}
+.escala-amostra span{flex:1;background:var(--salvia-clara);border-radius:4px 4px 0 0}
+.escala-amostra span:nth-child(n+8){background:var(--dourado-claro)}
+
+.cartao-acesso{background:#fff;border:1px solid var(--linha);border-radius:18px;padding:30px;position:sticky;top:24px}
+.cartao-acesso h2{font-family:var(--serif);font-weight:600;font-size:30px;margin:0 0 6px;line-height:1.1}
+.cartao-acesso .dica{color:var(--musgo-2);font-size:15px;margin:0 0 20px}
+.campo-codigo{width:100%;font-size:26px;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:14px 12px;border:1.5px solid var(--linha);border-radius:12px;background:var(--papel)}
+.campo-codigo:focus{border-color:var(--dourado);outline:none;box-shadow:0 0 0 3px var(--dourado-claro)}
+.cartao-acesso .rodape{margin:18px 0 0;font-size:15px;color:var(--musgo-2)}
+
+/* ---------- botões ---------- */
+.botao{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:15px 26px;font-weight:600;cursor:pointer;background:var(--musgo);color:#fff;font-size:17px;text-decoration:none}
+.botao:hover{background:#2E4739}
+.botao[disabled]{opacity:.55;cursor:wait}
+.botao.cheio{width:100%;margin-top:14px}
+.botao.ouro{background:var(--dourado)}
+.botao.ouro:hover{background:#94702F}
+.botao.leve{background:transparent;color:var(--musgo);border:1.5px solid var(--linha)}
+.botao.leve:hover{background:var(--salvia-clara)}
+.botao.pequeno{padding:9px 14px;font-size:15px;border-radius:10px}
+.msg-erro{color:var(--erro);font-size:15px;margin:10px 0 0;min-height:1.2em}
+
+/* ---------- formulário ---------- */
+.folha{max-width:760px;margin:0 auto}
+.folha h2{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4.4vw,44px);line-height:1.05;margin:8px 0 8px}
+.folha .intro{color:var(--musgo-2);margin:0 0 28px}
+.grade-campos{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
+.grade-campos .largo{grid-column:1/-1}
+label.rotulo{display:block;font-weight:500;margin-bottom:6px}
+label.rotulo small{font-weight:400;color:var(--musgo-2)}
+.entrada{width:100%;padding:12px 14px;border:1.5px solid var(--linha);border-radius:10px;background:#fff}
+.entrada:focus{border-color:var(--dourado);outline:none;box-shadow:0 0 0 3px var(--dourado-claro)}
+textarea.entrada{min-height:110px;resize:vertical}
+.entrada.invalido{border-color:var(--erro)}
+.opcoes-renda{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.opcoes-renda label{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1.5px solid var(--linha);border-radius:10px;background:#fff;cursor:pointer}
+.opcoes-renda input{accent-color:var(--musgo)}
+.opcoes-renda label:has(input:checked){border-color:var(--musgo);background:var(--salvia-clara)}
+.consentimento{display:flex;gap:12px;align-items:flex-start;font-size:15px;color:var(--musgo-2);background:var(--salvia-clara);padding:14px 16px;border-radius:12px}
+.consentimento input{margin-top:4px;width:18px;height:18px;accent-color:var(--musgo);flex:none}
+.acoes{display:flex;justify-content:space-between;gap:12px;margin-top:30px;flex-wrap:wrap}
+
+/* ---------- perguntas ---------- */
+.progresso{position:sticky;top:0;z-index:5;background:var(--papel);padding:12px 0 14px;margin-bottom:8px}
+.progresso .linha-info{display:flex;justify-content:space-between;font-size:15px;color:var(--musgo-2);margin-bottom:8px}
+.trilho{height:6px;background:var(--salvia-clara);border-radius:99px;overflow:hidden}
+.trilho div{height:100%;background:var(--dourado);width:0;transition:width .35s ease}
+.pergunta{padding:26px 0;border-bottom:1px solid var(--linha)}
+.pergunta:last-of-type{border-bottom:0}
+.pergunta .enunciado{display:flex;gap:14px;margin:0 0 16px;font-size:18px}
+.pergunta .num{font-family:var(--serif);font-size:30px;line-height:.9;color:var(--dourado);min-width:1.6em;font-weight:600}
+.pergunta.falta .enunciado{color:var(--erro)}
+.escala{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;align-items:end}
+.escala button{height:var(--h);min-height:44px;border:1.5px solid var(--linha);background:#fff;border-radius:10px 10px 6px 6px;cursor:pointer;font-weight:600;display:flex;align-items:flex-end;justify-content:center;padding-bottom:9px;transition:background .15s,border-color .15s}
+.escala button:hover{border-color:var(--salvia)}
+.escala button.marcado{background:var(--musgo);border-color:var(--musgo);color:#fff}
+.escala button.preenchido{background:var(--salvia-clara);border-color:var(--salvia-clara)}
+.legenda-escala{display:flex;justify-content:space-between;font-size:13.5px;color:var(--musgo-2);margin-top:8px}
+
+/* ---------- resultado ---------- */
+.resultado-topo{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.grafico{display:grid;gap:12px}
+.barra{display:grid;grid-template-columns:150px 1fr 44px;gap:14px;align-items:center}
+.barra .nome{font-weight:500;text-align:right}
+.barra .trilho-b{height:30px;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),var(--linha) calc(10% - 1px) 10%);border-radius:6px;overflow:hidden;background-color:#fff;border:1px solid var(--linha)}
+.barra .enchimento{height:100%;background:var(--salvia);border-radius:0 6px 6px 0;width:0;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+.barra.alta .enchimento{background:var(--nivel-alta)}
+.barra.alta .nome{color:var(--nivel-alta)}
+.barra.media .enchimento{background:var(--nivel-media)}
+.barra.media .nome{color:var(--nivel-media)}
+.barra.baixa .enchimento{background:var(--nivel-baixa)}
+.barra.baixa .nome{color:var(--nivel-baixa)}
+.legenda-niveis{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:14px;color:var(--musgo-2)}
+.legenda-niveis span{display:inline-flex;align-items:center;gap:8px}
+.legenda-niveis i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.grupo-nivel{margin-top:34px}
+.grupo-nivel>h3{font-family:var(--serif);font-size:28px;font-weight:600;margin:0 0 4px}
+.grupo-nivel>p.faixa{margin:0 0 14px;color:var(--musgo-2);font-size:15px}
+.grupo-nivel .itens{display:grid;gap:12px}
+.grupo-nivel .item{padding:2px 0 2px 16px;border-left:3px solid var(--nivel-baixa)}
+.grupo-nivel.alta .item{border-left-color:var(--nivel-alta)}
+.grupo-nivel.media .item{border-left-color:var(--nivel-media)}
+.grupo-nivel .item h4{margin:0;font-size:17px;font-weight:600}
+.grupo-nivel .item p{margin:2px 0 0;color:var(--musgo-2);font-size:15.5px}
+.grupo-nivel .nada{color:var(--musgo-2);font-style:italic;margin:0}
+.erro-campo{color:var(--erro);font-size:14px;margin:6px 0 0;font-weight:500}
+.barra .valor{font-family:var(--serif);font-size:24px;font-weight:600}
+.eixo{display:grid;grid-template-columns:150px 1fr 44px;gap:14px;font-size:13px;color:var(--musgo-2)}
+.eixo div{display:flex;justify-content:space-between}
+.aviso{margin-top:34px;padding:22px 24px;background:var(--salvia-clara);border-radius:16px}
+.aviso h3{font-family:var(--serif);font-size:26px;margin:0 0 6px;font-weight:600}
+.aviso p{margin:0 0 14px;color:var(--musgo-2)}
+.centro{text-align:center}
+.giro{width:46px;height:46px;border:4px solid var(--salvia-clara);border-top-color:var(--dourado);border-radius:50%;animation:gira 1s linear infinite;margin:60px auto 20px}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+/* ---------- área da terapeuta ---------- */
+.abas{display:flex;gap:6px;border-bottom:1px solid var(--linha);margin:10px 0 24px}
+.abas button{background:none;border:0;padding:12px 16px;cursor:pointer;font-weight:500;color:var(--musgo-2);border-bottom:3px solid transparent;margin-bottom:-1px}
+.abas button[aria-selected="true"]{color:var(--musgo);border-bottom-color:var(--dourado)}
+.painel-adm h2{font-family:var(--serif);font-size:38px;font-weight:600;margin:0}
+.barra-ferr{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-bottom:18px}
+.barra-ferr .entrada{max-width:320px}
+.tabela-wrap{overflow-x:auto;border:1px solid var(--linha);border-radius:12px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--linha);vertical-align:top;white-space:nowrap}
+th{font-weight:600;background:var(--papel);color:var(--musgo-2);font-size:14px}
+tr:last-child td{border-bottom:0}
+tbody tr.clicavel{cursor:pointer}
+tbody tr.clicavel:hover{background:var(--salvia-clara)}
+.selo{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600}
+.selo.disp{background:var(--salvia-clara);color:var(--musgo)}
+.selo.usado{background:var(--dourado-claro);color:#6E5223}
+.selo.canc{background:#EFE3E0;color:var(--erro)}
+.codigo-mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;letter-spacing:.06em}
+.novos-codigos{display:grid;gap:10px;margin:16px 0 26px}
+.novo{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--dourado-claro);padding:12px 14px;border-radius:12px}
+.novo .codigo-mono{font-size:20px;font-weight:600;margin-right:auto}
+.vazio{padding:34px;text-align:center;color:var(--musgo-2)}
+.ficha{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px 24px;margin:18px 0 26px}
+.ficha dt{font-size:14px;color:var(--musgo-2)}
+.ficha dd{margin:2px 0 0;font-weight:500;word-break:break-word}
+.texto-longo{margin:0 0 18px}
+.texto-longo h4{margin:0 0 4px;font-size:15px;color:var(--musgo-2);font-weight:500}
+.texto-longo p{margin:0;white-space:pre-wrap}
+.bloco-trava{margin-top:22px}
+.bloco-trava h4{font-family:var(--serif);font-size:22px;margin:0 0 6px;font-weight:600}
+.bloco-trava ol{margin:0;padding-left:0;list-style:none}
+.bloco-trava li{display:flex;gap:12px;padding:6px 0;border-bottom:1px dashed var(--linha);font-size:15px}
+.bloco-trava li b{min-width:28px;text-align:center;background:var(--salvia-clara);border-radius:6px;height:fit-content}
+.bloco-trava li b.alto{background:var(--dourado-claro)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--musgo);color:#fff;padding:12px 20px;border-radius:12px;font-size:15px;z-index:50}
+.rodape-site{max-width:1080px;margin:0 auto;padding:26px 24px 40px;border-top:1px solid var(--linha);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--musgo-2)}
+.rodape-site a{color:var(--musgo-2)}
+
+@media (max-width:860px){
+  .abertura{grid-template-columns:1fr;gap:30px}
+  .cartao-acesso{position:static}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .topo{padding:18px 18px}
+  main{padding:0 18px 56px}
+  .grade-campos{grid-template-columns:1fr}
+  .escala{grid-template-columns:repeat(5,1fr)}
+  .escala button{height:48px!important}
+  .barra,.eixo{grid-template-columns:96px 1fr 36px;gap:10px}
+  .barra .nome{font-size:14px}
+  .barra .valor{font-size:20px}
+  .acoes .botao{flex:1}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  .topo .sair,.abas,.barra-ferr,.rodape-site,.nao-imprimir,.demo{display:none!important}
+  body{background:#fff}
+  .barra .trilho-b,.barra .enchimento{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <a class="marca" href="#" id="linkInicio"><i>Terapeuta</i><b>Bárbara Vieira</b></a>
+  <button class="sair" id="botaoSair" hidden>Sair da área da terapeuta</button>
+</header>
+
+<main id="app">
+
+  <!-- ================= TELA 1: ABERTURA + CÓDIGO ================= -->
+  <section id="telaInicio">
+    <div class="abertura">
+      <div>
+        <h1>Teste de Travas Mentais</h1>
+        <p class="sub">Descubra o que está te impedindo de avançar</p>
+        <p>Você sente que está sempre se sabotando, mesmo quando sabe o que precisa fazer? Pode ser que algumas travas mentais estejam agindo silenciosamente nos bastidores da sua mente.</p>
+        <p>Este teste foi criado para te ajudar a identificar quais padrões limitantes estão bloqueando o seu progresso pessoal ou profissional. Em poucos minutos, você terá clareza sobre os principais sabotadores que podem estar afetando suas decisões, autoestima e resultados.</p>
+        <p>Responda com sinceridade e descubra o que está travando a sua evolução.</p>
+        <p class="assinatura">Terapeuta Bárbara Vieira</p>
+        <div class="escala-amostra" aria-hidden="true">
+          <span style="height:14%"></span><span style="height:23%"></span><span style="height:32%"></span><span style="height:41%"></span><span style="height:50%"></span><span style="height:59%"></span><span style="height:68%"></span><span style="height:77%"></span><span style="height:88%"></span><span style="height:100%"></span>
+        </div>
+      </div>
+
+      <form class="cartao-acesso" id="formCodigo" novalidate>
+        <h2>Comece seu teste</h2>
+        <p class="dica">Digite o código de acesso que a Bárbara te enviou.</p>
+        <label class="rotulo" for="campoCodigo">Código de acesso</label>
+        <input class="campo-codigo" id="campoCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX">
+        <p class="msg-erro" id="erroCodigo" role="alert"></p>
+        <button class="botao cheio" type="submit" id="botaoCodigo">Começar o teste</button>
+        <p class="rodape">Leva cerca de 15 minutos. Seu progresso fica salvo neste aparelho se você precisar parar.<br><br>
+          Ainda não tem um código? <a id="linkWhatsCodigo" target="_blank" rel="noopener">Peça para a Bárbara no WhatsApp</a>.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= TELA 2: DADOS PESSOAIS ================= -->
+  <section id="telaDados" hidden>
+    <form class="folha" id="formDados" novalidate>
+      <h2>Antes de começar, conte um pouco sobre você</h2>
+      <p class="intro" id="saudacaoCodigo">Os campos marcados com * são obrigatórios.</p>
+
+      <div class="grade-campos">
+        <div class="largo"><label class="rotulo" for="fNome">Qual é o seu nome? *</label><input class="entrada" id="fNome" name="nome" autocomplete="name" required></div>
+        <div><label class="rotulo" for="fIdade">Qual é a sua idade? *</label><input class="entrada" id="fIdade" name="idade" inputmode="numeric" maxlength="3" required></div>
+        <div><label class="rotulo" for="fGenero">Qual é o seu gênero? *</label>
+          <select class="entrada" id="fGenero" name="genero" required>
+            <option value="">Selecione</option><option>Feminino</option><option>Masculino</option><option>Outro</option><option>Prefiro não dizer</option>
+          </select></div>
+        <div><label class="rotulo" for="fWhats">Seu WhatsApp com DDD *</label><input class="entrada" id="fWhats" name="whatsapp" inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000" aria-describedby="erroWhats" required><p class="erro-campo" id="erroWhats" hidden></p></div>
+        <div><label class="rotulo" for="fEmail">Seu e-mail *</label><input class="entrada" id="fEmail" name="email" type="email" autocomplete="email" placeholder="seunome@email.com" aria-describedby="erroEmail" required><p class="erro-campo" id="erroEmail" hidden></p></div>
+        <div class="largo"><label class="rotulo" for="fProfissao">Qual é a sua profissão? *</label><input class="entrada" id="fProfissao" name="profissao" required></div>
+        <div class="largo"><span class="rotulo" id="rotRenda">Qual é a sua renda salarial? *</span>
+          <div class="opcoes-renda" role="radiogroup" aria-labelledby="rotRenda" id="opcoesRenda"></div></div>
+        <div class="largo"><label class="rotulo" for="fMotivo">O que te levou a procurar por terapia? <small>(opcional)</small></label><textarea class="entrada" id="fMotivo" name="motivo" maxlength="2000"></textarea></div>
+        <div class="largo"><label class="rotulo" for="fDor">Qual é a sua maior dor e quando essa dor começou? *</label><textarea class="entrada" id="fDor" name="dor" maxlength="2000" required></textarea></div>
+        <div class="largo"><label class="rotulo" for="fOlhar">Quando você olha para si e para a sua vida, o que você vê e sente? *</label><textarea class="entrada" id="fOlhar" name="autopercepcao" maxlength="2000" required></textarea></div>
+        <label class="consentimento largo"><input type="checkbox" id="fConsent" required>
+          <span>Concordo que minhas respostas sejam enviadas para a Terapeuta Bárbara Vieira e usadas apenas para o meu acompanhamento terapêutico, com sigilo.</span></label>
+      </div>
+      <p class="msg-erro" id="erroDados" role="alert"></p>
+      <div class="acoes">
+        <button type="button" class="botao leve" id="voltarInicio">Voltar</button>
+        <button type="submit" class="botao">Ir para as perguntas</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ================= TELA 3: PERGUNTAS ================= -->
+  <section id="telaPerguntas" hidden>
+    <div class="folha">
+      <div class="progresso">
+        <div class="linha-info"><span id="infoParte">Parte 1 de 10</span><span id="infoRespondidas">0 de 50 respondidas</span></div>
+        <div class="trilho"><div id="barraProgresso"></div></div>
+      </div>
+      <p class="intro" style="margin-top:14px">Responda numa escala de 1 a 10: 1 significa “não me identifico” e 10 significa “me descreve completamente”.</p>
+      <div id="listaPerguntas"></div>
+      <p class="msg-erro" id="erroPerguntas" role="alert"></p>
+      <div class="acoes">
+        <button type="button" class="botao leve" id="parteAnterior">Voltar</button>
+        <button type="button" class="botao" id="parteSeguinte">Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TELA 4: ENVIANDO ================= -->
+  <section id="telaEnviando" hidden>
+    <div class="folha centro"><div class="giro"></div><h2>Enviando suas respostas</h2><p class="intro">Isso leva só alguns segundos. Não feche esta página.</p></div>
+  </section>
+
+  <!-- ================= TELA 5: RESULTADO ================= -->
+  <section id="telaResultado" hidden>
+    <div class="folha">
+      <div class="resultado-topo">
+        <div>
+          <h2 id="tituloResultado">Seu mapa de travas</h2>
+          <p class="intro" style="margin:0">Quanto maior a barra, mais essa trava aparece hoje na sua vida.</p>
+        </div>
+      </div>
+      <div id="graficoCliente"></div>
+      <div class="leitura" id="leituraCliente"></div>
+      <div class="aviso">
+        <h3>Suas respostas já estão com a Bárbara</h3>
+        <p>Este mapa é um ponto de partida, não um diagnóstico. Na consulta, cada trava é olhada com calma, junto com o que está por trás dela.</p>
+        <div class="acoes" style="margin-top:0;justify-content:flex-start">
+          <a class="botao ouro" id="linkWhatsResultado" target="_blank" rel="noopener">Enviar meu resultado e agendar pelo WhatsApp</a>
+          <button type="button" class="botao leve" data-inicio>Voltar para a página inicial</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="telaObrigado" hidden>
+    <div class="folha centro" style="padding-top:40px">
+      <h2>Obrigada por responder</h2>
+      <p class="intro">Suas respostas já foram enviadas para a Bárbara. Ela vai analisar o seu mapa de travas e conversar com você na consulta.</p>
+      <div class="acoes" style="justify-content:center">
+        <a class="botao ouro" id="linkWhatsObrigado" target="_blank" rel="noopener">Enviar meu resultado e agendar pelo WhatsApp</a>
+        <button type="button" class="botao leve" data-inicio>Voltar para a página inicial</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ÁREA DA TERAPEUTA: LOGIN ================= -->
+  <section id="telaLogin" hidden>
+    <form class="folha" id="formLogin" style="max-width:440px" novalidate>
+      <h2>Área da terapeuta</h2>
+      <p class="intro">Entre com a sua senha para gerar códigos e ver as respostas.</p>
+      <label class="rotulo" for="campoSenha">Senha</label>
+      <input class="entrada" id="campoSenha" type="password" autocomplete="current-password">
+      <p class="msg-erro" id="erroLogin" role="alert"></p>
+      <button class="botao cheio" type="submit" id="botaoLogin">Entrar</button>
+    </form>
+  </section>
+
+  <!-- ================= ÁREA DA TERAPEUTA: PAINEL ================= -->
+  <section id="telaAdmin" class="painel-adm" hidden>
+    <h2>Olá, Bárbara</h2>
+    <div class="abas" role="tablist">
+      <button role="tab" aria-selected="true" data-aba="respostas">Respostas</button>
+      <button role="tab" aria-selected="false" data-aba="codigos">Códigos de acesso</button>
+    </div>
+
+    <!-- Respostas -->
+    <div id="abaRespostas">
+      <div id="listaRespostasWrap">
+        <div class="barra-ferr">
+          <div><label class="rotulo" for="buscaResp">Buscar por nome</label><input class="entrada" id="buscaResp" placeholder="Digite um nome"></div>
+          <button class="botao leve pequeno" id="atualizarResp">Atualizar lista</button>
+        </div>
+        <div class="tabela-wrap"><table>
+          <thead><tr><th>Data</th><th>Nome</th><th>Idade</th><th>WhatsApp</th><th>Trava mais forte</th></tr></thead>
+          <tbody id="corpoRespostas"></tbody>
+        </table></div>
+      </div>
+
+      <div id="detalheResposta" hidden>
+        <div class="acoes nao-imprimir" style="margin:0 0 18px">
+          <button class="botao leve pequeno" id="voltarLista">Voltar para a lista</button>
+          <button class="botao leve pequeno" id="imprimirDetalhe">Imprimir ou salvar em PDF</button>
+        </div>
+        <h2 id="detNome"></h2>
+        <dl class="ficha" id="detFicha"></dl>
+        <div id="detTextos"></div>
+        <h3 style="font-family:var(--serif);font-size:28px;margin:28px 0 14px">Mapa de travas</h3>
+        <div id="detGrafico"></div>
+        <div id="detLeitura"></div>
+        <div id="detPerguntas"></div>
+      </div>
+    </div>
+
+    <!-- Códigos -->
+    <div id="abaCodigos" hidden>
+      <form class="barra-ferr" id="formGerar" novalidate>
+        <div><label class="rotulo" for="gCliente">Nome do cliente <small>(opcional)</small></label><input class="entrada" id="gCliente" placeholder="Ex.: Maria Souza"></div>
+        <div><label class="rotulo" for="gQtd">Quantidade</label>
+          <select class="entrada" id="gQtd" style="width:110px"><option>1</option><option>2</option><option>3</option><option>5</option><option>10</option><option>20</option></select></div>
+        <button class="botao ouro" type="submit" id="botaoGerar">Gerar código</button>
+      </form>
+      <div class="novos-codigos" id="novosCodigos"></div>
+      <div class="barra-ferr"><button class="botao leve pequeno" id="atualizarCod">Atualizar lista</button></div>
+      <div class="tabela-wrap"><table>
+        <thead><tr><th>Código</th><th>Cliente</th><th>Criado em</th><th>Situação</th><th>Usado por</th><th></th></tr></thead>
+        <tbody id="corpoCodigos"></tbody>
+      </table></div>
+    </div>
+  </section>
+</main>
+
+<footer class="rodape-site">
+  <span>Terapeuta Bárbara Vieira. Suas respostas são confidenciais.</span>
+  <a href="#admin" id="linkAdmin">Área da terapeuta</a>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO — só mexa aqui
+   ===================================================================== */
+const CONFIG = {
+  // Cole entre as aspas o link do App da Web do Google Apps Script (termina em /exec).
+  // Enquanto estiver vazio, o site funciona em MODO DEMONSTRAÇÃO (dados só neste navegador).
+  API_URL: "https://script.google.com/macros/s/AKfycbz1nVzcLETEKuzBMW-c99BsMk4Fjuz5KQmTCwa-yTppJgCcWOpsJ27BDstFqPomvbo0/exec",
+
+  // WhatsApp da Bárbara: 55 + DDD + número, só números.
+  WHATSAPP: "5522992685522",
+
+  // true = o cliente vê o gráfico no final. false = vê só a mensagem de agradecimento.
+  MOSTRAR_RESULTADO_AO_CLIENTE: true,
+
+  // Endereço público do teste (usado na mensagem de WhatsApp com o código). Deixe "" para usar o endereço atual.
+  LINK_DO_TESTE: ""
+};
+
+/* =====================================================================
+   CONTEÚDO DO TESTE
+   ===================================================================== */
+const TRAVAS = [
+  { nome: "Autoconfiança", texto: "Dúvida sobre a própria capacidade de agir, decidir e encarar o novo." },
+  { nome: "Escassez", texto: "Sensação de que nunca é suficiente e medo constante de perder o que tem." },
+  { nome: "Aprovação", texto: "Necessidade de validação e medo de ser julgada ou rejeitada." },
+  { nome: "Paterna", texto: "Marcas da relação com o pai que ainda pesam nas suas relações." },
+  { nome: "Competência", texto: "Crença de que aprender é difícil demais para você." },
+  { nome: "Vítima", texto: "Dificuldade de se posicionar, dizer não e defender o que é seu." },
+  { nome: "Perfeição", texto: "Exigência excessiva consigo mesma e medo de errar." },
+  { nome: "Servidor", texto: "Colocar sempre as necessidades dos outros acima das suas." },
+  { nome: "Procrastinação", texto: "Adiar o que importa e fugir para distrações." },
+  { nome: "Ambiente", texto: "Apego a pessoas e lugares que fazem mal, por medo do desconhecido." }
+];
+
+const PERGUNTAS = [
+  "Você se sente incapaz de lidar com situações novas ou difíceis e evita se envolver em atividades que exijam esforço ou tomada de decisão?",
+  "Você se preocupa demais com o que os outros pensam e, assim, deixa de tomar decisões ou se expressar livremente?",
+  "Você fica muito preocupada em agradar os outros e receber elogios, muitas vezes em detrimento de suas próprias necessidades?",
+  "Você tem dificuldade em tomar a iniciativa para agir ou resolver problemas e sempre espera que outras pessoas assumam a liderança?",
+  "Você tem uma visão negativa de si mesma, o que faz com que você esteja frequentemente subestimando suas capacidades e sentindo-se desanimada?",
+  "Você sente que nunca tem o suficiente, mesmo quando as necessidades básicas são atendidas, e vive em constante insatisfação?",
+  "Você tem medo de perder suas posses, recursos ou até mesmo seus relacionamentos e se sente constantemente ameaçado pela possibilidade de perder o que tem?",
+  "Você tem dificuldade em compartilhar recursos ou tempo com outras pessoas, pois teme que isso possa te levar a ter menos do que já tem?",
+  "Você se sente desconfortável ao receber presentes, ajuda ou até mesmo elogios, pois acredita que não merece ou que não há nada de graça na vida?",
+  "Você acredita que as oportunidades são limitadas e que é impossível ou muito difícil para você ter outras oportunidades ou melhorar sua situação de vida?",
+  "Você tem dificuldade em tomar decisões por si mesma, pois está sempre preocupada com o que os outros vão pensar ou como vão reagir?",
+  "Você tem medo de ser julgada ou rejeitada por outros e se sente ansiosa ou insegura em relação à sua imagem?",
+  "Você tem uma baixa autoestima e se sente um pouco confiante em si mesma apenas quando recebe reconhecimento e validação dos outros?",
+  "Você se sente insatisfeita mesmo quando recebe a aprovação dos outros, pois sente que nunca é o suficiente e continua buscando por mais?",
+  "Você sente dificuldade em dizer o que realmente pensa ou sente por medo de ser julgado ou perder o afeto das pessoas ao seu redor?",
+  "Você tem dificuldade em se conectar emocionalmente com seu pai e se sente distante ou indiferente em relação a ele?",
+  "Você sente ressentimento ou raiva em relação ao seu pai devido a eventos do passado, como ausência, negligência, abuso ou outras formas de trauma?",
+  "Você sente dificuldade em estabelecer e manter relacionamentos saudáveis, pois não consegue confiar ou se abrir emocionalmente devido à falta de um relacionamento próximo com o pai?",
+  "Você tem comportamentos autodestrutivos, como abuso de substâncias, comportamentos compulsivos ou relacionamentos abusivos, como uma forma de lidar com a dor e a falta de apoio paterno?",
+  "Você tem dificuldade em estabelecer limites saudáveis em relacionamentos, pois pode ter dificuldade em reconhecer o que é saudável ou aceitável devido à falta de orientação e exemplo paterno?",
+  "Você sente dificuldade em aprender novos conceitos e informações, mesmo depois de tentar várias vezes?",
+  "Você sente desinteresse ou falta de motivação em relação ao aprendizado?",
+  "Você tem a sensação de que a aprendizagem é difícil ou até mesmo impossível?",
+  "Você tem baixa autoestima em relação às habilidades de aprendizado?",
+  "Você sente dificuldade em manter a atenção durante as aulas ou durante a leitura?",
+  "Você tem dificuldade em estabelecer limites e em dizer “não”?",
+  "Você tem tendência a seguir o que os outros dizem e se conformar com a vontade alheia?",
+  "Você tem dificuldade em lidar com conflitos e em se posicionar em situações de confronto?",
+  "Você tem dificuldade em se importar e em defender seus interesses?",
+  "Você tem tendência a evitar assumir responsabilidades?",
+  "Você tem dificuldade em concluir tarefas ou projetos por acreditar que eles nunca estão perfeitos o suficiente?",
+  "Você sente ansiedade excessiva em relação ao desempenho em todas as áreas da vida, incluindo trabalho, relacionamentos, estudos etc.?",
+  "Você se autocritica constantemente e sente desaprovação interna, mesmo quando os resultados alcançados são considerados bons por outras pessoas?",
+  "Você é bastante rígida em relação a regras e padrões, tendo dificuldade em lidar com mudanças e imprevistos?",
+  "Você tem dificuldade em delegar tarefas para outras pessoas, devido à crença de que elas não são capazes de realizá-las de forma satisfatória?",
+  "Você tem dificuldade em dizer “não” para as demandas ou pedidos dos outros, mesmo que isso signifique sacrificar suas próprias necessidades e desejos?",
+  "Você se sente frustrada ou ressentida com os outros por eles não reconhecerem seus esforços em ajudá-los?",
+  "Você se sente insegura ou sem valor quando não é capaz de ajudar os outros?",
+  "Você sente dificuldade em pedir ajuda ou apoio dos outros quando necessário, porque se sente culpada ou egoísta?",
+  "Você sente como se estivesse sempre “no modo de salvamento”, colocando as necessidades dos outros acima de suas próprias necessidades e desejos?",
+  "Você tem dificuldade para iniciar tarefas, mesmo aquelas que são importantes ou urgentes?",
+  "Você tem tendência a adiar tarefas, muitas vezes até o último minuto?",
+  "Você tem um sentimento de culpa por não conseguir cumprir suas responsabilidades dentro do prazo?",
+  "Você tem dificuldade em manter o foco e a concentração durante o trabalho, o que pode levar a mais procrastinação?",
+  "Você faz uso de distrações, como redes sociais, jogos ou outras atividades que não são produtivas, para evitar o trabalho?",
+  "Você não acredita em si mesma e tem medo de não encontrar um ambiente melhor?",
+  "Você se sente confortável com a situação atual, mesmo que seja tóxica, e tem medo de mudar para algo desconhecido?",
+  "Você se sente emocionalmente ligada às pessoas ou ao ambiente tóxico e acha difícil se afastar?",
+  "Você acredita que não tem habilidades sociais adequadas para encontrar e estabelecer relações com pessoas saudáveis e, portanto, se sente presa em ambientes que não te acolhem?",
+  "Você tem medo de ficar sozinha e, portanto, prefere permanecer em um ambiente tóxico em vez de se afastar?"
+];
+
+const RENDAS = ["Menos de 1.000","Entre 1.000 e 2.000","Entre 2.000 e 3.000","Entre 3.000 e 5.000","Entre 5.000 e 8.000","Entre 8.000 e 10.000","Mais de 10.000","Não tenho renda"];
+const POR_PARTE = 5;
+const PARTES = PERGUNTAS.length / POR_PARTE;
+
+/* =====================================================================
+   UTILITÁRIOS
+   ===================================================================== */
+const $ = (id) => document.getElementById(id);
+const TELAS = ["telaInicio","telaDados","telaPerguntas","telaEnviando","telaResultado","telaObrigado","telaLogin","telaAdmin"];
+function mostrar(tela){ TELAS.forEach(t => $(t).hidden = (t !== tela)); window.scrollTo(0,0); }
+function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function normCodigo(s){ return String(s||"").toUpperCase().replace(/[^A-Z0-9]/g,"").replace(/^(.{4})(.+)$/,"$1-$2"); }
+function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),2600); }
+function linkWhats(texto){ return "https://wa.me/" + CONFIG.WHATSAPP + (texto ? "?text=" + encodeURIComponent(texto) : ""); }
+function calcularMedias(respostas){
+  return TRAVAS.map((_, i) => {
+    const bloco = respostas.slice(i*POR_PARTE, i*POR_PARTE+POR_PARTE).map(Number);
+    return Math.round(bloco.reduce((a,b)=>a+b,0) / POR_PARTE * 10) / 10;
+  });
+}
+function fmtData(iso){ if(!iso) return ""; const d=new Date(iso); if(isNaN(d)) return String(iso); return d.toLocaleDateString("pt-BR")+" "+d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+const guardar = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+
+/* =====================================================================
+   COMUNICAÇÃO COM A PLANILHA (Google Apps Script)
+   ===================================================================== */
+async function api(acao, dados = {}){
+  if(!CONFIG.API_URL){
+    const local = location.protocol === "file:" || ["localhost","127.0.0.1"].includes(location.hostname);
+    if(local) return apiDemo(acao, dados);
+    throw new Error("O site ainda não está conectado à planilha da Bárbara. Avise a Bárbara para finalizar a configuração.");
+  }
+  let r;
+  try{
+    r = await fetch(CONFIG.API_URL, { method:"POST", body: JSON.stringify({ acao, ...dados }) });
+  }catch(e){ throw new Error("Sem conexão com o servidor. Verifique sua internet e tente de novo."); }
+  let j; try{ j = await r.json(); }catch(e){ throw new Error("O servidor respondeu de forma inesperada. Tente de novo em instantes."); }
+  if(!j.ok) throw new Error(j.erro || "Algo deu errado. Tente de novo.");
+  return j;
+}
+
+/* ---- Modo demonstração: imita o servidor usando o navegador ---- */
+function apiDemo(acao, d){
+  const cods = guardar.get("tm_demo_codigos") || [{codigo:"DEMO-2026",cliente:"Teste",criadoEm:new Date().toISOString(),status:"Disponível",usadoEm:"",usadoPor:""}];
+  const resps = guardar.get("tm_demo_respostas") || [];
+  const salvar = () => { guardar.set("tm_demo_codigos", cods); guardar.set("tm_demo_respostas", resps); };
+  const adm = async () => { if(await sha256(d.senha||"") !== SENHA_DEMO_HASH) throw new Error("Senha incorreta."); };
+  return new Promise((ok, falha) => setTimeout(async () => { try{
+    if(acao==="validarCodigo"){
+      const c = cods.find(x => x.codigo === d.codigo);
+      if(!c) throw new Error("Código não encontrado. Confira se digitou igual ao que recebeu.");
+      if(c.status !== "Disponível") throw new Error("Este código já foi usado. Peça um novo para a Bárbara.");
+      return ok({ok:true, cliente:c.cliente});
+    }
+    if(acao==="enviarRespostas"){
+      const c = cods.find(x => x.codigo === d.codigo);
+      if(!c || c.status !== "Disponível") throw new Error("Este código não está mais disponível.");
+      const medias = calcularMedias(d.resposta.respostas);
+      const id = "R" + Date.now();
+      resps.push({ id, data:new Date().toISOString(), codigo:d.codigo, ...d.resposta, medias });
+      c.status="Usado"; c.usadoEm=new Date().toISOString(); c.usadoPor=d.resposta.nome;
+      salvar();
+      return ok({ok:true, id, medias});
+    }
+    if(acao==="login"){ await adm(); return ok({ok:true}); }
+    if(acao==="gerarCodigos"){
+      await adm(); const novos=[];
+      for(let i=0;i<Math.min(20,Number(d.quantidade)||1);i++){
+        const cod = gerarCodigoLocal(); cods.push({codigo:cod,cliente:d.cliente||"",criadoEm:new Date().toISOString(),status:"Disponível",usadoEm:"",usadoPor:""}); novos.push(cod);
+      }
+      salvar(); return ok({ok:true, codigos:novos});
+    }
+    if(acao==="listarCodigos"){ await adm(); salvar(); return ok({ok:true, codigos:cods.slice().reverse()}); }
+    if(acao==="cancelarCodigo"){ await adm(); const c=cods.find(x=>x.codigo===d.codigo); if(c&&c.status==="Disponível"){c.status="Cancelado";} salvar(); return ok({ok:true}); }
+    if(acao==="listarRespostas"){ await adm(); return ok({ok:true, respostas:resps.slice().reverse()}); }
+    throw new Error("Ação desconhecida.");
+  }catch(e){ falha(e); } }, 350));
+}
+// Senha do modo demonstração guardada só como "impressão digital" (hash), nunca em texto.
+const SENHA_DEMO_HASH = "3862ec4f83c3ca2412ac46ee3d532afe909e0399e20c160a81394913da3a5132";
+async function sha256(t){ const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join(""); }
+function gerarCodigoLocal(){
+  const a="ABCDEFGHJKMNPQRSTUVWXYZ23456789"; let s="";
+  const n = new Uint32Array(8); crypto.getRandomValues(n);
+  for(let i=0;i<8;i++){ s += a[n[i] % a.length]; if(i===3) s+="-"; }
+  return s;
+}
+
+/* =====================================================================
+   FLUXO DO CLIENTE
+   ===================================================================== */
+const estado = { codigo:"", dados:{}, respostas:Array(PERGUNTAS.length).fill(null), parte:0 };
+const chaveProgresso = () => "tm_progresso_" + estado.codigo;
+function salvarProgresso(){ if(estado.codigo) guardar.set(chaveProgresso(), {dados:estado.dados, respostas:estado.respostas, parte:estado.parte}); }
+
+// Renda
+$("opcoesRenda").innerHTML = RENDAS.map((r,i) => `<label><input type="radio" name="renda" value="${esc(r)}" id="renda${i}"> ${esc(r)}</label>`).join("");
+
+// Código
+$("campoCodigo").addEventListener("input", e => { e.target.value = normCodigo(e.target.value); });
+$("formCodigo").addEventListener("submit", async e => {
+  e.preventDefault();
+  const cod = normCodigo($("campoCodigo").value);
+  $("erroCodigo").textContent = "";
+  if(cod.replace("-","").length < 8){ $("erroCodigo").textContent = "O código tem 8 letras e números, como ABCD-1234."; return; }
+  const b = $("botaoCodigo"); b.disabled = true; b.textContent = "Verificando…";
+  try{
+    const r = await api("validarCodigo", { codigo: cod });
+    estado.codigo = cod;
+    const salvo = guardar.get(chaveProgresso());
+    if(salvo){ estado.dados = salvo.dados||{}; estado.respostas = salvo.respostas||estado.respostas; estado.parte = salvo.parte||0; }
+    preencherDados();
+    if(r.cliente && !$("fNome").value) $("fNome").value = r.cliente;
+    if(salvo && salvo.dados && salvo.dados.nome){ toast("Continuando de onde você parou."); irParaPerguntas(); }
+    else mostrar("telaDados");
+  }catch(err){ $("erroCodigo").textContent = err.message; }
+  finally{ b.disabled = false; b.textContent = "Começar o teste"; }
+});
+$("voltarInicio").addEventListener("click", () => mostrar("telaInicio"));
+// Botões "Voltar para a página inicial" do final do teste: limpa tudo para um novo acesso
+document.querySelectorAll("[data-inicio]").forEach(b => b.addEventListener("click", () => {
+  estado.codigo = ""; estado.dados = {}; estado.respostas = Array(PERGUNTAS.length).fill(null); estado.parte = 0;
+  $("formDados").reset(); $("campoCodigo").value = ""; $("erroCodigo").textContent = "";
+  ["erroEmail","erroWhats"].forEach(id => { $(id).hidden = true; $(id).textContent = ""; });
+  history.replaceState(null,"",location.pathname);
+  mostrar("telaInicio");
+}));
+
+// Dados
+const CAMPOS = { nome:"fNome", idade:"fIdade", genero:"fGenero", whatsapp:"fWhats", email:"fEmail", profissao:"fProfissao", motivo:"fMotivo", dor:"fDor", autopercepcao:"fOlhar" };
+function preencherDados(){
+  for(const [k,id] of Object.entries(CAMPOS)) if(estado.dados[k] != null) $(id).value = estado.dados[k];
+  if(estado.dados.renda){ const el=[...document.querySelectorAll('input[name="renda"]')].find(x=>x.value===estado.dados.renda); if(el) el.checked=true; }
+  $("fConsent").checked = !!estado.dados.consentimento;
+}
+function lerDados(){
+  const d = {};
+  for(const [k,id] of Object.entries(CAMPOS)) d[k] = $(id).value.trim();
+  const r = document.querySelector('input[name="renda"]:checked'); d.renda = r ? r.value : "";
+  d.consentimento = $("fConsent").checked;
+  return d;
+}
+$("formDados").addEventListener("input", () => { estado.dados = lerDados(); salvarProgresso(); });
+$("fWhats").addEventListener("input", e => {
+  let v = e.target.value.replace(/\D/g,"").slice(0,11);
+  if(v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2, v.length-4)}-${v.slice(-4)}`;
+  else if(v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+  e.target.value = v;
+});
+// Mensagens em vermelho logo abaixo do e-mail e do WhatsApp
+function problemaEmail(v){
+  if(!v) return "Digite o seu e-mail.";
+  if(!v.includes("@")) return "Este e-mail está incompleto: falta o @. Exemplo: seunome@gmail.com";
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return "Este e-mail está incompleto: confira o que vem depois do @. Exemplo: seunome@gmail.com";
+  return "";
+}
+function problemaWhats(v){
+  const n = v.replace(/\D/g,"");
+  if(!n) return "Digite o seu WhatsApp com DDD.";
+  if(n.length < 10) return `Número incompleto: você digitou ${n.length} números. Coloque o DDD + o número, por exemplo (71) 99999-9999.`;
+  return "";
+}
+function mostrarErroCampo(campoId, erroId, msg){
+  $(erroId).textContent = msg; $(erroId).hidden = !msg;
+  $(campoId).classList.toggle("invalido", !!msg);
+  $(campoId).setAttribute("aria-invalid", msg ? "true" : "false");
+}
+$("fEmail").addEventListener("blur", e => { if(e.target.value.trim()) mostrarErroCampo("fEmail","erroEmail", problemaEmail(e.target.value.trim())); });
+$("fWhats").addEventListener("blur", e => { if(e.target.value.trim()) mostrarErroCampo("fWhats","erroWhats", problemaWhats(e.target.value)); });
+$("fEmail").addEventListener("input", e => { if(!$("erroEmail").hidden && !problemaEmail(e.target.value.trim())) mostrarErroCampo("fEmail","erroEmail",""); });
+$("fWhats").addEventListener("input", e => { if(!$("erroWhats").hidden && !problemaWhats(e.target.value)) mostrarErroCampo("fWhats","erroWhats",""); });
+
+$("formDados").addEventListener("submit", e => {
+  e.preventDefault();
+  const d = lerDados(); estado.dados = d;
+  document.querySelectorAll("#formDados .invalido").forEach(x => x.classList.remove("invalido"));
+  const faltando = [];
+  ["nome","idade","genero","profissao","dor","autopercepcao"].forEach(k => { if(!d[k]){ faltando.push(k); $(CAMPOS[k]).classList.add("invalido"); } });
+  const eEmail = problemaEmail(d.email), eWhats = problemaWhats(d.whatsapp);
+  mostrarErroCampo("fEmail","erroEmail", eEmail);
+  mostrarErroCampo("fWhats","erroWhats", eWhats);
+  let msg = "";
+  if(faltando.length || eEmail || eWhats) msg = "Não foi possível avançar: corrija os campos marcados em vermelho.";
+  else if(!d.renda) msg = "Não foi possível avançar: escolha uma faixa de renda.";
+  else if(!d.consentimento) msg = "Não foi possível avançar: marque a caixa de concordância no fim do formulário.";
+  $("erroDados").textContent = msg;
+  if(msg){ const el = document.querySelector("#formDados .invalido"); if(el) el.focus(); return; }
+  salvarProgresso();
+  irParaPerguntas();
+});
+
+// Perguntas
+function irParaPerguntas(){ renderParte(); mostrar("telaPerguntas"); }
+function renderParte(){
+  const ini = estado.parte * POR_PARTE;
+  let html = "";
+  for(let i = ini; i < ini + POR_PARTE; i++){
+    const v = estado.respostas[i];
+    let botoes = "";
+    for(let n=1;n<=10;n++){
+      const cls = v===n ? "marcado" : (v && n < v ? "preenchido" : "");
+      botoes += `<button type="button" class="${cls}" style="--h:${44 + n*3}px" data-q="${i}" data-v="${n}" aria-pressed="${v===n}" aria-label="${n}">${n}</button>`;
+    }
+    html += `<div class="pergunta" id="p${i}">
+      <p class="enunciado"><span class="num">${i+1}</span><span>${esc(PERGUNTAS[i])}</span></p>
+      <div class="escala" role="group" aria-label="Pergunta ${i+1}, de 1 a 10">${botoes}</div>
+      <div class="legenda-escala"><span>Não me identifico</span><span>Me descreve completamente</span></div>
+    </div>`;
+  }
+  $("listaPerguntas").innerHTML = html;
+  $("infoParte").textContent = `Parte ${estado.parte+1} de ${PARTES}`;
+  $("parteSeguinte").textContent = estado.parte === PARTES-1 ? "Enviar minhas respostas" : "Continuar";
+  $("erroPerguntas").textContent = "";
+  atualizarProgresso();
+}
+function atualizarProgresso(){
+  const feitas = estado.respostas.filter(x => x).length;
+  $("infoRespondidas").textContent = `${feitas} de ${PERGUNTAS.length} respondidas`;
+  $("barraProgresso").style.width = (feitas / PERGUNTAS.length * 100) + "%";
+}
+$("listaPerguntas").addEventListener("click", e => {
+  const b = e.target.closest("button[data-q]"); if(!b) return;
+  const q = +b.dataset.q, v = +b.dataset.v;
+  estado.respostas[q] = v;
+  b.parentElement.querySelectorAll("button").forEach(x => {
+    const n = +x.dataset.v;
+    x.className = n===v ? "marcado" : (n < v ? "preenchido" : "");
+    x.setAttribute("aria-pressed", n===v);
+  });
+  $("p"+q).classList.remove("falta");
+  salvarProgresso(); atualizarProgresso();
+});
+$("parteAnterior").addEventListener("click", () => {
+  if(estado.parte === 0){ mostrar("telaDados"); return; }
+  estado.parte--; salvarProgresso(); renderParte(); window.scrollTo(0,0);
+});
+$("parteSeguinte").addEventListener("click", () => {
+  const ini = estado.parte * POR_PARTE;
+  const faltam = [];
+  for(let i=ini;i<ini+POR_PARTE;i++) if(!estado.respostas[i]){ faltam.push(i); $("p"+i).classList.add("falta"); }
+  if(faltam.length){
+    $("erroPerguntas").textContent = faltam.length===1 ? `Falta responder a pergunta ${faltam[0]+1}.` : `Faltam ${faltam.length} perguntas nesta parte, marcadas em vermelho.`;
+    $("p"+faltam[0]).scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  if(estado.parte < PARTES-1){ estado.parte++; salvarProgresso(); renderParte(); window.scrollTo(0,0); }
+  else enviar();
+});
+
+async function enviar(){
+  mostrar("telaEnviando");
+  const d = estado.dados;
+  const resposta = { nome:d.nome, idade:d.idade, genero:d.genero, whatsapp:d.whatsapp, email:d.email, profissao:d.profissao, renda:d.renda, motivo:d.motivo, dor:d.dor, autopercepcao:d.autopercepcao, respostas:estado.respostas };
+  try{
+    const r = await api("enviarRespostas", { codigo: estado.codigo, resposta });
+    guardar.del(chaveProgresso());
+    const medias = r.medias || calcularMedias(estado.respostas);
+    const primeiroNome = (d.nome||"").split(" ")[0];
+    $("linkWhatsResultado").href = linkWhats(textoResultadoWhats(d.nome, medias));
+    $("linkWhatsObrigado").href = $("linkWhatsResultado").href;
+    if(CONFIG.MOSTRAR_RESULTADO_AO_CLIENTE){
+      $("tituloResultado").textContent = primeiroNome ? `${primeiroNome}, este é o seu mapa de travas` : "Seu mapa de travas";
+      mostrar("telaResultado");
+      desenharGrafico($("graficoCliente"), medias);
+      desenharLeitura($("leituraCliente"), medias);
+    } else mostrar("telaObrigado");
+  }catch(err){
+    mostrar("telaPerguntas");
+    $("erroPerguntas").textContent = err.message + " Suas respostas continuam salvas neste aparelho.";
+  }
+}
+
+/* =====================================================================
+   GRÁFICO (mesmo desenho para cliente e terapeuta)
+   ===================================================================== */
+function topTres(medias){ return medias.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).slice(0,3).map(x=>x[1]); }
+// Faixas: alta = 6 a 10 | média = 5 (5,0 a 5,9) | baixa = 1 a 4 (até 4,9)
+const NIVEIS = [
+  { chave:"alta",  titulo:"Travas altas",  faixa:"Média de 6 a 10. São as que mais aparecem hoje e pedem atenção primeiro." },
+  { chave:"media", titulo:"Travas médias", faixa:"Média 5. Aparecem em alguns momentos e merecem acompanhamento." },
+  { chave:"baixa", titulo:"Travas baixas", faixa:"Média de 1 a 4. Têm pouca influência na sua vida hoje." }
+];
+function nivel(v){ return v >= 6 ? "alta" : v >= 5 ? "media" : "baixa"; }
+function fmtN(v){ return Number(v).toFixed(1).replace(".",","); }
+function gruposPorNivel(medias){
+  const g = { alta:[], media:[], baixa:[] };
+  medias.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).forEach(([v,i]) => g[nivel(v)].push(i));
+  return g;
+}
+function desenharLeitura(alvo, medias){
+  const g = gruposPorNivel(medias);
+  alvo.innerHTML = NIVEIS.map(n => `<div class="grupo-nivel ${n.chave}">
+    <h3>${n.titulo}</h3><p class="faixa">${n.faixa}</p>
+    ${g[n.chave].length ? `<div class="itens">${g[n.chave].map(i => `<div class="item"><h4>${esc(TRAVAS[i].nome)}: ${fmtN(medias[i])}</h4><p>${esc(TRAVAS[i].texto)}</p></div>`).join("")}</div>`
+      : `<p class="nada">Nenhuma trava nesta faixa.</p>`}
+  </div>`).join("");
+}
+function textoResultadoWhats(nome, medias){
+  const g = gruposPorNivel(medias);
+  const linha = n => g[n].length ? g[n].map(i => `• ${TRAVAS[i].nome}: ${fmtN(medias[i])}`).join("\n") : "• nenhuma";
+  return `Olá, Bárbara! Sou ${nome} e acabei de fazer o Teste de Travas Mentais. Quero agendar minha consulta.\n\n`
+    + `Meu resultado:\n\n*Travas altas (6 a 10)*\n${linha("alta")}\n\n*Travas médias (5)*\n${linha("media")}\n\n*Travas baixas (1 a 4)*\n${linha("baixa")}`;
+}
+function desenharGrafico(alvo, medias){
+  alvo.innerHTML = `<div class="grafico" role="img" aria-label="Gráfico das travas: ${TRAVAS.map((t,i)=>t.nome+" "+medias[i]).join(", ")}">
+    ${TRAVAS.map((t,i) => `<div class="barra ${nivel(medias[i])}">
+      <span class="nome">${esc(t.nome)}</span>
+      <div class="trilho-b"><div class="enchimento" data-w="${medias[i]*10}"></div></div>
+      <span class="valor">${medias[i].toFixed(1).replace(".",",")}</span></div>`).join("")}
+    <div class="eixo"><span></span><div><span>0</span><span>5</span><span>10</span></div><span></span></div>
+  </div>
+  <div class="legenda-niveis"><span><i style="background:var(--nivel-alta)"></i>Alta (6 a 10)</span><span><i style="background:var(--nivel-media)"></i>Média (5)</span><span><i style="background:var(--nivel-baixa)"></i>Baixa (1 a 4)</span></div>`;
+  requestAnimationFrame(() => requestAnimationFrame(() => alvo.querySelectorAll(".enchimento").forEach(el => el.style.width = el.dataset.w + "%")));
+}
+
+/* =====================================================================
+   ÁREA DA TERAPEUTA
+   ===================================================================== */
+const adm = { senha:"", respostas:[], codigos:[] };
+
+function abrirAdmin(){
+  if(adm.senha){ mostrar("telaAdmin"); $("botaoSair").hidden = false; return; }
+  mostrar("telaLogin"); setTimeout(()=>$("campoSenha").focus(), 50);
+}
+$("linkAdmin").addEventListener("click", e => { e.preventDefault(); location.hash = "admin"; abrirAdmin(); });
+$("linkInicio").addEventListener("click", e => { e.preventDefault(); history.replaceState(null,"",location.pathname+location.search); mostrar(adm.senha ? "telaAdmin" : "telaInicio"); });
+$("botaoSair").addEventListener("click", () => {
+  adm.senha=""; adm.respostas=[]; adm.codigos=[];
+  $("botaoSair").hidden = true; $("campoSenha").value="";
+  history.replaceState(null,"",location.pathname+location.search);
+  mostrar("telaInicio");
+});
+
+$("formLogin").addEventListener("submit", async e => {
+  e.preventDefault();
+  const s = $("campoSenha").value; $("erroLogin").textContent = "";
+  if(!s){ $("erroLogin").textContent = "Digite a senha."; return; }
+  const b = $("botaoLogin"); b.disabled = true; b.textContent = "Entrando…";
+  try{
+    await api("login", { senha:s });
+    adm.senha = s; $("campoSenha").value = "";
+    $("botaoSair").hidden = false;
+    mostrar("telaAdmin"); trocarAba("respostas");
+  }catch(err){ $("erroLogin").textContent = err.message; }
+  finally{ b.disabled = false; b.textContent = "Entrar"; }
+});
+
+document.querySelectorAll(".abas button").forEach(b => b.addEventListener("click", () => trocarAba(b.dataset.aba)));
+function trocarAba(aba){
+  document.querySelectorAll(".abas button").forEach(b => b.setAttribute("aria-selected", b.dataset.aba===aba));
+  $("abaRespostas").hidden = aba!=="respostas"; $("abaCodigos").hidden = aba!=="codigos";
+  if(aba==="respostas"){ $("detalheResposta").hidden = true; $("listaRespostasWrap").hidden = false; carregarRespostas(); }
+  else carregarCodigos();
+}
+
+// ---- Respostas
+async function carregarRespostas(){
+  $("corpoRespostas").innerHTML = `<tr><td colspan="5" class="vazio">Carregando respostas…</td></tr>`;
+  try{ const r = await api("listarRespostas", { senha:adm.senha }); adm.respostas = r.respostas || []; desenharListaRespostas(); }
+  catch(err){ $("corpoRespostas").innerHTML = `<tr><td colspan="5" class="vazio">${esc(err.message)}</td></tr>`; }
+}
+function desenharListaRespostas(){
+  const termo = $("buscaResp").value.trim().toLowerCase();
+  const lista = adm.respostas.filter(r => !termo || String(r.nome).toLowerCase().includes(termo));
+  if(!lista.length){
+    $("corpoRespostas").innerHTML = `<tr><td colspan="5" class="vazio">${adm.respostas.length ? "Nenhum nome encontrado com essa busca." : "Ainda não há respostas. Gere um código na aba “Códigos de acesso” e envie para o seu cliente."}</td></tr>`;
+    return;
+  }
+  $("corpoRespostas").innerHTML = lista.map(r => {
+    const m = r.medias || calcularMedias(r.respostas); const t = topTres(m)[0];
+    return `<tr class="clicavel" tabindex="0" data-id="${esc(r.id)}"><td>${esc(fmtData(r.data))}</td><td><b>${esc(r.nome)}</b></td><td>${esc(r.idade)}</td><td>${esc(r.whatsapp)}</td><td>${esc(TRAVAS[t].nome)} (${m[t].toFixed(1).replace(".",",")})</td></tr>`;
+  }).join("");
+}
+$("buscaResp").addEventListener("input", desenharListaRespostas);
+$("atualizarResp").addEventListener("click", carregarRespostas);
+$("corpoRespostas").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if(tr) abrirDetalhe(tr.dataset.id); });
+$("corpoRespostas").addEventListener("keydown", e => { if(e.key==="Enter"){ const tr = e.target.closest("tr[data-id]"); if(tr) abrirDetalhe(tr.dataset.id); } });
+$("voltarLista").addEventListener("click", () => { $("detalheResposta").hidden = true; $("listaRespostasWrap").hidden = false; });
+$("imprimirDetalhe").addEventListener("click", () => window.print());
+
+function abrirDetalhe(id){
+  const r = adm.respostas.find(x => String(x.id) === String(id)); if(!r) return;
+  const m = r.medias || calcularMedias(r.respostas);
+  $("listaRespostasWrap").hidden = true; $("detalheResposta").hidden = false;
+  $("detNome").textContent = r.nome;
+  const ficha = [["Data", fmtData(r.data)],["Idade", r.idade],["Gênero", r.genero],["WhatsApp", r.whatsapp],["E-mail", r.email],["Profissão", r.profissao],["Renda", r.renda],["Código usado", r.codigo]];
+  $("detFicha").innerHTML = ficha.map(([k,v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join("");
+  const whats = String(r.whatsapp||"").replace(/\D/g,"");
+  if(whats) $("detFicha").innerHTML += `<div class="nao-imprimir"><dt>Contato</dt><dd><a href="https://wa.me/55${whats}" target="_blank" rel="noopener">Abrir conversa no WhatsApp</a></dd></div>`;
+  $("detTextos").innerHTML = [["O que levou a procurar terapia", r.motivo],["Maior dor e quando começou", r.dor],["Quando olha para si e para a vida, o que vê e sente", r.autopercepcao]]
+    .map(([k,v]) => `<div class="texto-longo"><h4>${k}</h4><p>${esc(v || "Não respondeu.")}</p></div>`).join("");
+  desenharGrafico($("detGrafico"), m); desenharLeitura($("detLeitura"), m);
+  $("detPerguntas").innerHTML = TRAVAS.map((t,ti) => `<div class="bloco-trava"><h4>${esc(t.nome)}: média ${m[ti].toFixed(1).replace(".",",")}</h4><ol>${
+    PERGUNTAS.slice(ti*POR_PARTE, ti*POR_PARTE+POR_PARTE).map((p,k) => { const n = ti*POR_PARTE+k; const v = Number(r.respostas[n]); return `<li><b class="${v>=6?"alto":""}">${v}</b><span>${n+1}. ${esc(p)}</span></li>`; }).join("")
+  }</ol></div>`).join("");
+  window.scrollTo(0,0);
+}
+
+// ---- Códigos
+async function carregarCodigos(){
+  $("corpoCodigos").innerHTML = `<tr><td colspan="6" class="vazio">Carregando códigos…</td></tr>`;
+  try{ const r = await api("listarCodigos", { senha:adm.senha }); adm.codigos = r.codigos || []; desenharCodigos(); }
+  catch(err){ $("corpoCodigos").innerHTML = `<tr><td colspan="6" class="vazio">${esc(err.message)}</td></tr>`; }
+}
+function desenharCodigos(){
+  if(!adm.codigos.length){ $("corpoCodigos").innerHTML = `<tr><td colspan="6" class="vazio">Nenhum código criado ainda. Use o botão “Gerar código” acima.</td></tr>`; return; }
+  $("corpoCodigos").innerHTML = adm.codigos.map(c => {
+    const cls = c.status==="Disponível" ? "disp" : c.status==="Usado" ? "usado" : "canc";
+    return `<tr><td class="codigo-mono">${esc(c.codigo)}</td><td>${esc(c.cliente)}</td><td>${esc(fmtData(c.criadoEm))}</td>
+      <td><span class="selo ${cls}">${esc(c.status)}</span></td><td>${esc(c.usadoPor)}${c.usadoEm ? "<br><small>"+esc(fmtData(c.usadoEm))+"</small>" : ""}</td>
+      <td>${c.status==="Disponível" ? `<button class="botao leve pequeno" data-copiar="${esc(c.codigo)}">Copiar</button> <button class="botao leve pequeno" data-cancelar="${esc(c.codigo)}">Cancelar</button>` : ""}</td></tr>`;
+  }).join("");
+}
+function mensagemCodigo(cod, cliente){
+  const link = CONFIG.LINK_DO_TESTE || (location.origin + location.pathname);
+  return `Olá${cliente ? ", " + cliente.split(" ")[0] : ""}! Aqui é a Bárbara. Este é o seu acesso ao Teste de Travas Mentais:\n\nLink: ${link}?codigo=${cod}\nCódigo: ${cod}\n\nResponda com calma e sinceridade. Leva uns 15 minutos.`;
+}
+async function copiar(t){ try{ await navigator.clipboard.writeText(t); toast("Copiado."); }catch(e){ prompt("Copie o texto abaixo:", t); } }
+
+$("formGerar").addEventListener("submit", async e => {
+  e.preventDefault();
+  const b = $("botaoGerar"); b.disabled = true; b.textContent = "Gerando…";
+  const cliente = $("gCliente").value.trim();
+  try{
+    const r = await api("gerarCodigos", { senha:adm.senha, cliente, quantidade:+$("gQtd").value });
+    $("novosCodigos").innerHTML = r.codigos.map(c => `<div class="novo"><span class="codigo-mono">${esc(c)}</span>
+      <button class="botao leve pequeno" data-copiar="${esc(c)}">Copiar código</button>
+      <button class="botao leve pequeno" data-msg="${esc(c)}" data-cli="${esc(cliente)}">Copiar mensagem pronta</button>
+      <a class="botao pequeno" target="_blank" rel="noopener" href="${linkWhatsSemNumero(mensagemCodigo(c, cliente))}">Enviar pelo WhatsApp</a></div>`).join("");
+    $("gCliente").value = "";
+    carregarCodigos();
+  }catch(err){ toast(err.message); }
+  finally{ b.disabled = false; b.textContent = "Gerar código"; }
+});
+function linkWhatsSemNumero(texto){ return "https://wa.me/?text=" + encodeURIComponent(texto); }
+$("abaCodigos").addEventListener("click", async e => {
+  const cp = e.target.closest("[data-copiar]"); if(cp){ copiar(cp.dataset.copiar); return; }
+  const mg = e.target.closest("[data-msg]"); if(mg){ copiar(mensagemCodigo(mg.dataset.msg, mg.dataset.cli)); return; }
+  const cc = e.target.closest("[data-cancelar]");
+  if(cc && confirm(`Cancelar o código ${cc.dataset.cancelar}? Ele deixará de funcionar.`)){
+    try{ await api("cancelarCodigo", { senha:adm.senha, codigo:cc.dataset.cancelar }); toast("Código cancelado."); carregarCodigos(); }
+    catch(err){ toast(err.message); }
+  }
+});
+$("atualizarCod").addEventListener("click", carregarCodigos);
+
+/* =====================================================================
+   INÍCIO
+   ===================================================================== */
+$("linkWhatsCodigo").href = linkWhats("Olá, Bárbara! Quero fazer o Teste de Travas Mentais. Pode me enviar um código de acesso?");
+const codUrl = new URLSearchParams(location.search).get("codigo");
+if(codUrl) $("campoCodigo").value = normCodigo(codUrl);
+if(location.hash === "#admin") abrirAdmin(); else mostrar("telaInicio");
+window.addEventListener("hashchange", () => { if(location.hash === "#admin") abrirAdmin(); });
+</script>
+</body>
+</html>
