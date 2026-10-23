@@ -236,6 +236,35 @@ tbody tr.clicavel:hover{background:var(--salvia-clara)}
 .vit-btn.vit-feito{opacity:.6;cursor:default}
 .vit-vazio{font-size:14px;opacity:.75;margin:0}
 </style>
+<style>
+/* Ofertas e pagamentos recolhidos: só o nome, com botão vermelho piscando para expandir */
+.vit-resumo{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:4px}
+.vit-nomes{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.vit-nome{display:inline-block;background:#fff;border:1px solid rgba(0,0,0,.12);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600}
+.vit-nome-d{border-color:#C62828;box-shadow:inset 0 0 0 1px #C62828}
+.vit-alerta{display:inline-flex;align-items:center;gap:9px;background:#C62828;color:#fff;border:0;border-radius:999px;padding:11px 18px;font:inherit;font-size:14.5px;font-weight:700;cursor:pointer;animation:vitPisca 1.1s ease-in-out infinite}
+.vit-alerta:hover{background:#A81F1F}
+.vit-alerta:focus-visible{outline:3px solid #1a1a1a;outline-offset:2px}
+.vit-alerta.aberto{animation:none;background:#5A5A5A}
+.vit-ponto{width:11px;height:11px;border-radius:50%;background:#fff;flex:0 0 auto;animation:vitPonto 1.1s ease-in-out infinite}
+.vit-alerta.aberto .vit-ponto{animation:none;opacity:.6}
+@keyframes vitPisca{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,.75);opacity:1}50%{box-shadow:0 0 0 9px rgba(198,40,40,0);opacity:.8}}
+@keyframes vitPonto{0%,100%{opacity:1}50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.vit-alerta,.vit-ponto{animation:none}}
+.vit-detalhe{margin-top:14px}
+#financeiroRessignificar{margin:0 0 22px}
+.fin-chip{display:inline-block;font-size:12.5px;font-weight:700;padding:4px 11px;border-radius:999px;border:1px solid transparent}
+.fin-chip.pendente{background:#FFF1BF;color:#7A5B00;border-color:#E8C24A}
+.fin-chip.atrasado{background:#F7D9D5;color:#8C2016;border-color:#E2A39B}
+.fin-chip.pago{background:#DDF2E3;color:#15502E;border-color:#A8D8B6}
+.fin-tabela{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden}
+.fin-tabela th,.fin-tabela td{padding:9px 10px;text-align:left;border-bottom:1px solid rgba(0,0,0,.08);vertical-align:top}
+.fin-tabela th{font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;opacity:.7}
+.fin-tabela td.n,.fin-tabela th.n{text-align:right;white-space:nowrap}
+.fin-aviso{margin:10px 0 0;font-size:14px}
+.fin-rolagem{overflow-x:auto}
+@media print{#financeiroRessignificar{display:none!important}}
+</style>
 </head>
 <body>
 
@@ -457,6 +486,37 @@ async function sairMembros() {
   const v = document.getElementById("vitrineRessignificar"); if (v) v.innerHTML = "";
 }
 function escV(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c])); }
+function botaoAlerta(alvo, texto) {
+  return '<button type="button" class="vit-alerta" data-vit-abrir="' + alvo + '" data-txt="' + escV(texto) + '" aria-expanded="false" aria-controls="' + alvo + '"><span class="vit-ponto" aria-hidden="true"></span><span class="vit-alerta-txt">' + escV(texto) + '</span></button>';
+}
+document.addEventListener("click", function (e) {
+  const b = e.target.closest && e.target.closest("[data-vit-abrir]"); if (!b) return;
+  const alvo = document.getElementById(b.dataset.vitAbrir); if (!alvo) return;
+  const abrir = alvo.hidden; alvo.hidden = !abrir;
+  b.setAttribute("aria-expanded", String(abrir)); b.classList.toggle("aberto", abrir);
+  b.querySelector(".vit-alerta-txt").textContent = abrir ? "Recolher" : b.dataset.txt;
+});
+async function carregarFinanceiroVit(c, uid, caixa) {
+  let fin = document.getElementById("financeiroRessignificar");
+  if (!fin) { fin = document.createElement("div"); fin.id = "financeiroRessignificar"; caixa.insertAdjacentElement("afterend", fin); }
+  fin.innerHTML = "";
+  try {
+    const r = await c.from("cobrancas").select("id,descricao,vencimento,valor,pago_em").eq("perfil_id", uid).is("pago_em", null).order("vencimento");
+    const lista = r.data || []; if (!lista.length) return;
+    const d = new Date(), hoje = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+    const brl = v => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    const dataBR = iso => iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4);
+    const atr = lista.filter(x => x.vencimento < hoje), pen = lista.filter(x => x.vencimento >= hoje);
+    const tot = lista.reduce((s, x) => s + Number(x.valor), 0);
+    const chip = x => x.vencimento < hoje ? '<span class="fin-chip atrasado">Atrasado</span>' : '<span class="fin-chip pendente">Pendente</span>';
+    fin.innerHTML = '<div class="vit-topo"><div><b class="vit-titulo">Seus pagamentos</b><span class="vit-sub">' + lista.length + (lista.length === 1 ? " pagamento" : " pagamentos") + " em aberto · " + brl(tot) + '</span></div></div>' +
+      '<div class="vit-resumo"><div class="vit-nomes">' + (atr.length ? '<span class="fin-chip atrasado">' + atr.length + " atrasado" + (atr.length > 1 ? "s" : "") + "</span>" : "") +
+      (pen.length ? '<span class="fin-chip pendente">' + pen.length + " pendente" + (pen.length > 1 ? "s" : "") + "</span>" : "") + "</div>" + botaoAlerta("finDetalhe", "Importante: confira valores e datas de pagamento") + "</div>" +
+      '<div class="vit-detalhe" id="finDetalhe" hidden><div class="fin-rolagem"><table class="fin-tabela"><thead><tr><th>Pagamento</th><th>Vencimento</th><th class="n">Valor</th><th>Situação</th></tr></thead><tbody>' +
+      lista.map(x => "<tr><td>" + escV(x.descricao) + "</td><td>" + dataBR(x.vencimento) + '</td><td class="n">' + brl(x.valor) + "</td><td>" + chip(x) + "</td></tr>").join("") + "</tbody></table></div>" +
+      '<p class="fin-aviso">' + (atr.length ? "Há pagamento em atraso. Se você já pagou, envie o comprovante ao Mauricio. Se precisar, fale com ele para combinar." : "Fique de olho nas datas de vencimento. Qualquer dúvida, fale com o Mauricio.") + "</p></div>";
+  } catch (e) { fin.innerHTML = ""; }
+}
 async function carregarVitrine() {
   const caixa = document.getElementById("vitrineRessignificar"); if (!caixa) return;
   try {
@@ -483,10 +543,14 @@ async function carregarVitrine() {
           (p.link_pagamento ? '<a class="vit-btn vit-sec" href="' + escV(p.link_pagamento) + '" target="_blank" rel="noopener">Comprar agora</a>' : "") +
         '</div></article>';
     };
-    caixa.innerHTML = '<div class="vit-topo"><div><b class="vit-titulo">Ofertas da Ressignificar para você</b>' +
+    const topoVit = '<div class="vit-topo"><div><b class="vit-titulo">Ofertas da Ressignificar para você</b>' +
       '<span class="vit-sub">Produtos e serviços do Mauricio Pinho</span></div>' +
-      '<a class="vit-link" href="' + AREA_MEMBROS + '?email=' + encodeURIComponent(EMAIL_MEMBROS) + '" target="_blank" rel="noopener">Abrir minha Área de Membros →</a></div>' +
-      (prods.length ? '<div class="vit-grade">' + prods.map(card).join("") + '</div>' : '<p class="vit-vazio">Em breve novas ofertas por aqui.</p>');
+      '<a class="vit-link" href="' + AREA_MEMBROS + '?email=' + encodeURIComponent(EMAIL_MEMBROS) + '" target="_blank" rel="noopener">Abrir minha Área de Membros →</a></div>';
+    caixa.innerHTML = topoVit + (prods.length
+      ? '<div class="vit-resumo"><div class="vit-nomes">' + prods.map(p => '<span class="vit-nome' + (p.destaque ? " vit-nome-d" : "") + '">' + escV(p.nome) + "</span>").join("") + "</div>" + botaoAlerta("vitDetalhe", "Importante: leia e clique para expandir") + "</div>" +
+        '<div class="vit-detalhe" id="vitDetalhe" hidden><div class="vit-grade">' + prods.map(card).join("") + "</div></div>"
+      : '<p class="vit-vazio">Em breve novas ofertas por aqui.</p>');
+    await carregarFinanceiroVit(c, uid, caixa);
   } catch (e) { caixa.innerHTML = ""; }
 }
 document.addEventListener("click", async function (e) {
