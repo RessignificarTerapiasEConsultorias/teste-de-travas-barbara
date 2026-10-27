@@ -257,6 +257,7 @@ tbody tr.clicavel:hover{background:var(--salvia-clara)}
 .fin-chip.pendente{background:#FFF1BF;color:#7A5B00;border-color:#E8C24A}
 .fin-chip.atrasado{background:#F7D9D5;color:#8C2016;border-color:#E2A39B}
 .fin-chip.pago{background:#DDF2E3;color:#15502E;border-color:#A8D8B6}
+.fin-chip.proxima{background:#ECEAE4;color:#4A463C;border-color:#CFC9BA}
 .fin-tabela{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;border-radius:12px;overflow:hidden}
 .fin-tabela th,.fin-tabela td{padding:9px 10px;text-align:left;border-bottom:1px solid rgba(0,0,0,.08);vertical-align:top}
 .fin-tabela th{font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;opacity:.7}
@@ -506,12 +507,13 @@ async function carregarFinanceiroVit(c, uid, caixa) {
     const d = new Date(), hoje = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
     const brl = v => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
     const dataBR = iso => iso.slice(8, 10) + "/" + iso.slice(5, 7) + "/" + iso.slice(0, 4);
-    const atr = lista.filter(x => x.vencimento < hoje), pen = lista.filter(x => x.vencimento >= hoje);
+    const fimMes = hoje.slice(0, 8) + String(new Date(+hoje.slice(0, 4), +hoje.slice(5, 7), 0).getDate()).padStart(2, "0");
+    const atr = lista.filter(x => x.vencimento < hoje), pen = lista.filter(x => x.vencimento >= hoje && x.vencimento <= fimMes), fut = lista.filter(x => x.vencimento > fimMes);
     const tot = lista.reduce((s, x) => s + Number(x.valor), 0);
-    const chip = x => x.vencimento < hoje ? '<span class="fin-chip atrasado">Atrasado</span>' : '<span class="fin-chip pendente">Pendente</span>';
-    fin.innerHTML = '<div class="vit-topo"><div><b class="vit-titulo">Seus pagamentos</b><span class="vit-sub">' + lista.length + (lista.length === 1 ? " pagamento" : " pagamentos") + " em aberto · " + brl(tot) + '</span></div></div>' +
+    const chip = x => x.vencimento < hoje ? '<span class="fin-chip atrasado">Atrasado</span>' : (x.vencimento > fimMes ? '<span class="fin-chip proxima">Próxima</span>' : '<span class="fin-chip pendente">Vencimento próximo</span>');
+    fin.innerHTML = '<div class="vit-topo"><div><b class="vit-titulo">Seus pagamentos</b><span class="vit-sub">' + (atr.length + pen.length) + ((atr.length + pen.length) === 1 ? " pagamento" : " pagamentos") + " em aberto neste mês · " + brl(atr.concat(pen).reduce((q, x) => q + Number(x.valor), 0)) + '</span></div></div>' +
       '<div class="vit-resumo"><div class="vit-nomes">' + (atr.length ? '<span class="fin-chip atrasado">' + atr.length + " atrasado" + (atr.length > 1 ? "s" : "") + "</span>" : "") +
-      (pen.length ? '<span class="fin-chip pendente">' + pen.length + " pendente" + (pen.length > 1 ? "s" : "") + "</span>" : "") + "</div>" + botaoAlerta("finDetalhe", "Importante: confira valores e datas de pagamento") + "</div>" +
+      (pen.length ? '<span class="fin-chip pendente">' + pen.length + (pen.length > 1 ? " vencimentos próximos" : " vencimento próximo") + "</span>" : "") + (fut.length ? '<span class="fin-chip proxima">' + fut.length + (fut.length > 1 ? " próximas" : " próxima") + "</span>" : "") + "</div>" + botaoAlerta("finDetalhe", "Importante: confira valores e datas de pagamento") + "</div>" +
       '<div class="vit-detalhe" id="finDetalhe" hidden><div class="fin-rolagem"><table class="fin-tabela"><thead><tr><th>Pagamento</th><th>Vencimento</th><th class="n">Valor</th><th>Situação</th></tr></thead><tbody>' +
       lista.map(x => "<tr><td>" + escV(x.descricao) + "</td><td>" + dataBR(x.vencimento) + '</td><td class="n">' + brl(x.valor) + "</td><td>" + chip(x) + "</td></tr>").join("") + "</tbody></table></div>" +
       '<p class="fin-aviso">' + (atr.length ? "Há pagamento em atraso. Se você já pagou, envie o comprovante ao Mauricio. Se precisar, fale com ele para combinar." : "Fique de olho nas datas de vencimento. Qualquer dúvida, fale com o Mauricio.") + "</p></div>";
