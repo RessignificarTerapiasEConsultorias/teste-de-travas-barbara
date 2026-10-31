@@ -371,6 +371,22 @@ img{max-width:100%;display:block}
   #detalhe-conteudo .escolha-pdf{display:none!important}
 }
 </style>
+<style id="css-compartilhado">
+/* cronômetro fixo no topo, em todas as telas do cliente */
+#barra-tempo{display:none;position:fixed;top:0;left:0;right:0;z-index:2500;background:var(--ardosia-escura,#22302A);color:#fff;padding:7px 14px 8px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.22);pointer-events:none}
+#barra-tempo.ver{display:block}
+#barra-tempo.urgente{background:#9A2F23}
+#barra-tempo .bt-linha{display:flex;align-items:baseline;justify-content:center;gap:10px;font-size:15px}
+#barra-tempo .bt-num{font:700 21px/1.1 'Karla',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+#barra-tempo .bt-aviso{font-size:12.5px;line-height:1.3;opacity:.92;margin-top:2px}
+body.com-tempo{padding-top:60px}
+.aviso-fechar{background:#FFF1BF;border:1.6px solid #E8C24A;color:#5C4500;border-radius:14px;padding:14px 16px;margin:0 0 18px;font-size:16.5px;line-height:1.45}
+/* o botão de falar com a terapeuta chama a atenção (código individual e compartilhado) */
+@keyframes comp-pisca{0%,100%{box-shadow:0 0 0 0 rgba(31,160,85,.6);transform:scale(1);opacity:1}50%{box-shadow:0 0 0 15px rgba(31,160,85,0);transform:scale(1.03);opacity:.86}}
+#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:comp-pisca 1.5s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:none;outline:3px solid #1FA055;outline-offset:3px}}
+@media print{#barra-tempo{display:none!important}body.com-tempo{padding-top:0}}
+</style>
 <style id="css-apres">
 #ap-overlay{position:fixed;inset:0;z-index:3000;background:#05070d;display:none}
 #ap-overlay.ativo{display:block}
@@ -383,6 +399,10 @@ body.ap-aberto{overflow:hidden}
 <div class="envelope">
 
 <!-- ======================= TELA 1 — CAPA ======================= -->
+<div id="barra-tempo" role="timer" aria-label="Tempo restante para responder">
+  <div class="bt-linha"><span id="bt-rot">Tempo restante</span><b class="bt-num" id="bt-num">30:00</b></div>
+  <div class="bt-aviso" id="bt-aviso">Não feche essa página, você pode não conseguir ter acesso novamente</div>
+</div>
 <section class="tela ativa" id="tela-capa">
   <div class="capa">
     <div class="moldura">
@@ -632,6 +652,16 @@ body.ap-aberto{overflow:hidden}
 </section>
 
 <!-- ======================= TELA 6 — ÁREA DA TERAPEUTA ======================= -->
+<section class="tela" id="tela-expirou">
+  <span class="selo">Tempo esgotado</span>
+  <h1 style="font-size:clamp(27px,6.6vw,37px);margin-bottom:12px">O seu tempo acabou</h1>
+  <p>Os 30 minutos para responder terminaram antes de o teste ser enviado. Isso acontece, e tem solução.</p>
+  <p>Fale com a <span id="exp-prim"></span> para receber um novo link e refazer com calma.</p>
+  <a class="btn btn-zap" id="btn-zap-expirou" href="#" target="_blank" rel="noopener">
+    <span class="duas">Pedir um novo link no WhatsApp<small>abre a conversa com mensagem pronta</small></span>
+  </a>
+</section>
+
 <section class="tela" id="tela-admin">
   <button class="voltar" id="voltar-site">← Voltar para o site</button>
 
@@ -677,6 +707,26 @@ body.ap-aberto{overflow:hidden}
           <div class="alternar" id="alt-resultado" role="radiogroup" aria-labelledby="rot-alt-resultado">
             <button type="button" class="ativa" data-v="1" role="radio" aria-checked="true">Sim, ela vê<small>o mapa e a análise de cada trava</small></button>
             <button type="button" data-v="0" role="radio" aria-checked="false">Não, só eu vejo<small>ela recebe só um agradecimento</small></button>
+          </div>
+        </div>
+        <div class="campo">
+          <label id="rot-modo-cod">Como será o código?</label>
+          <div class="alternar" id="alt-modo" role="radiogroup" aria-labelledby="rot-modo-cod">
+            <button type="button" class="ativa" data-v="uni" role="radio" aria-checked="true">Individual<small>um código por pessoa</small></button>
+            <button type="button" data-v="comp" role="radio" aria-checked="false">Mesmo código<small>um link para várias pessoas (campanha)</small></button>
+          </div>
+        </div>
+        <div id="bloco-comp" style="display:none">
+          <div class="campo">
+            <label for="comp-qtd">Quantas pessoas podem usar o link?</label>
+            <select id="comp-qtd"><option>1</option><option>3</option><option>5</option><option>10</option><option>20</option><option>30</option><option selected>50</option><option>100</option><option>200</option><option>500</option><option value="x">Outro número…</option></select>
+            <input id="comp-qtd-outro" type="number" min="1" max="1000" placeholder="De 1 a 1000" style="display:none;margin-top:8px;max-width:180px">
+            <div class="dica">Cada pessoa que tocar em Entrar ocupa uma vaga e tem <b>30 minutos</b> para responder, com cronômetro na tela. Quando as vagas acabam, o link para de aceitar novas pessoas.</div>
+          </div>
+          <div class="campo">
+            <label for="comp-nome">Nome da campanha <span class="opc">(opcional)</span></label>
+            <input id="comp-nome" type="text" placeholder="Ex.: Reels de outubro">
+            <div class="dica">Só você vê. Ajuda a lembrar de onde vieram as pessoas. Cada resposta aparece numerada (ex.: BV-34DT-1, BV-34DT-2).</div>
           </div>
         </div>
         <div class="campo">
@@ -945,7 +995,7 @@ const estado = {
 
 function guardar(c,v){ try{ localStorage.setItem(c, JSON.stringify(v)); }catch(e){} }
 function ler(c,p){ try{ const v = localStorage.getItem(c); return v ? JSON.parse(v) : p; }catch(e){ return p; } }
-function mostrarTela(id){ $$('.tela').forEach(t=>t.classList.remove('ativa')); $(id).classList.add('ativa'); window.scrollTo({top:0,behavior:'auto'}); }
+function mostrarTela(id){ $$('.tela').forEach(t=>t.classList.remove('ativa')); $(id).classList.add('ativa'); window.scrollTo({top:0,behavior:'auto'}); if(typeof compBarra === 'function') compBarra(id); }
 function avisar(id,txt){ const el=$(id); if(!txt){el.classList.remove('ver');el.textContent='';return;} el.textContent=txt; el.classList.add('ver'); }
 function hoje(){ return new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function zapNumero(bruto){ let n=String(bruto||'').replace(/\D/g,''); if(!n) return ''; if(n.length<=11) n='55'+n; return n; }
@@ -1011,7 +1061,7 @@ const CAMPOS2 = [
 /* ============================================================================
    6. PLANILHA (Apps Script)
    ============================================================================ */
-async function api(acao, dados){
+async function api(acao, dados, token){
   try{
     const c = clienteMembros();
     // --- abertas à paciente (sem login) ---
@@ -1020,7 +1070,7 @@ async function api(acao, dados){
       return error ? { ok:false, erro:String(error.message||error) } : data;
     }
     if(acao === ACOES.salvarResposta){
-      const { data, error } = await c.rpc('travas_salvar_resposta', { p_dados: dados });
+      const { data, error } = await c.rpc('travas_salvar_resposta', token ? { p_dados: dados, p_token: token } : { p_dados: dados });
       return error ? { ok:false, erro:String(error.message||error) } : data;
     }
     // --- só a terapeuta, já logada na Área de Membros ---
@@ -1031,7 +1081,7 @@ async function api(acao, dados){
     if(acao === ACOES.gerarCodigo){
       let codigo = dados.codigo;
       for(let t=0; t<6; t++){
-        const { error } = await c.from('travas_codigos').insert({ terapeuta_id:uid, codigo, cliente:dados.cliente||null, whatsapp:dados.whatsapp||null, mostrar_resultado: dados.mostrar !== false });
+        const { error } = await c.from('travas_codigos').insert({ terapeuta_id:uid, codigo, cliente:dados.cliente||null, whatsapp:dados.whatsapp||null, mostrar_resultado: dados.mostrar !== false, ...(dados.compartilhado ? { compartilhado:true, usos_max:dados.usosMax } : {}) });
         if(!error) return { ok:true, codigo };
         if(error.code === '23505'){ codigo = novoCodigo(); continue; }   // código repetido: sorteia outro
         return { ok:false, erro:String(error.message||error) };
@@ -1039,10 +1089,11 @@ async function api(acao, dados){
       return { ok:false, erro:'nao_gerou' };
     }
     if(acao === ACOES.listarCodigos){
-      const { data, error } = await c.from('travas_codigos').select('codigo,cliente,whatsapp,criado_em,usado,usado_por,usado_em,mostrar_resultado')
+      const { data, error } = await c.from('travas_codigos').select('id,codigo,cliente,whatsapp,criado_em,usado,usado_por,usado_em,mostrar_resultado,compartilhado,usos_max,usos')
         .eq('terapeuta_id', uid).order('criado_em',{ascending:false}).limit(300);
       if(error) return { ok:false, erro:String(error.message||error) };
-      return { ok:true, codigos:(data||[]).map(x => ({ codigo:x.codigo, cliente:x.cliente||'', whatsapp:x.whatsapp||'', criadoEm:quando(x.criado_em),
+      const acc = await compContarAcessos(c, uid, data);
+      return { ok:true, codigos:(data||[]).map(x => ({ compartilhado:x.compartilhado === true, usosMax:x.usos_max, usos:x.usos || 0, entraram:acc.entraram[x.id] || 0, concluidos:acc.concluidos[x.id] || 0, codigo:x.codigo, cliente:x.cliente||'', whatsapp:x.whatsapp||'', criadoEm:quando(x.criado_em),
         usado:x.usado, mostrarResultado:x.mostrar_resultado !== false, usadoPor:x.usado_por||'', usadoEm:x.usado_em ? quando(x.usado_em) : '' })) };
     }
     if(acao === ACOES.listarRespostas){
@@ -1069,12 +1120,13 @@ async function validarCodigo(codigo){
   if(!modoLocal()){
     const r = await api(ACOES.validarCodigo,{codigo});
     if(r && r.ok === false && r.erro) return {ok:false, msg:'Não consegui verificar agora. Confira a sua internet e tente de novo.'};
-    if(r && (r.valido === true || r.ok === true)) return {ok:true, mostrar: r.mostrar_resultado !== false, cliente: r.cliente || ''};
+    if(r && (r.valido === true || r.ok === true)) return {ok:true, mostrar: r.mostrar_resultado !== false, cliente: r.cliente || '', compartilhado: r.compartilhado === true, duracao: r.duracao_min || 30};
     return {ok:false, msg:(r && r.msg) || 'Esse código não está valendo. Ele já foi usado ou foi digitado diferente.'};
   }
   const lista = ler(CHAVE_CODIGOS, []);
   const achado = lista.find(c => c.codigo === codigo);
   if(!achado) return {ok:false, msg:'Esse código não existe. Confira as letras e tente de novo.'};
+  if(achado.compartilhado) return compLocalValido(achado);
   if(achado.usado) return {ok:false, msg:'Esse código já foi usado. Peça um novo para a Bárbara.'};
   return {ok:true, mostrar:(achado.mostrarResultado !== false), cliente: achado.cliente || ''};
 }
@@ -1105,6 +1157,11 @@ $('#btn-entrar').addEventListener('click', async () => {
   if(!r.ok){ b.disabled=false; b.textContent='Entrar'; avisar('#aviso-codigo', r.msg); return; }
   estado.codigo = codigo;
   estado.mostrarResultado = r.mostrar !== false;
+  estado.acesso = null;
+  if(r.compartilhado){
+    const ac = await compIniciar(codigo);
+    if(!ac.ok){ b.disabled = false; b.textContent = 'Entrar'; avisar('#aviso-codigo', ac.msg); return; }
+  }
   b.textContent = 'Entrar';
   if(r.cliente && !$('#campo-nome').value.trim()){ $('#campo-nome').value = r.cliente; $('#campo-nome').dispatchEvent(new Event('input')); }
   prepararOrientacao();
@@ -1125,7 +1182,186 @@ $('#voltar-dados1').addEventListener('click', ()=> mostrarTela('#tela-dados1'));
     $('#dica-codigo').textContent = 'O seu código já está preenchido. É só tocar em Entrar.';
   }catch(e){}
 })();
+/* ============================================================================
+   CÓDIGO COMPARTILHADO (um link para várias pessoas) + CRONÔMETRO DE 30 MINUTOS
+   ============================================================================ */
+const CHAVE_ACESSO = CHAVE_CODIGOS + '_acesso_';
+const PRIM_TER = (CONFIG.terapeuta || '').split(' ')[0];
+const compFmt = s => String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+let compTimer = null;
+
+/* --- cronômetro: aparece em todas as telas do cliente --- */
+function compResta(){ const a = estado.acesso; return a ? Math.max(0, Math.ceil((a.expiraEm - (Date.now() + a.offset)) / 1000)) : 0; }
+function compBarra(id){
+  const on = !!estado.acesso && id !== '#tela-admin';
+  $('#barra-tempo').classList.toggle('ver', on);
+  document.body.classList.toggle('com-tempo', on);
+}
+function compTick(){
+  const a = estado.acesso; if(!a) return;
+  const s = compResta(), terminou = !!estado.resultado;
+  $('#bt-num').textContent = compFmt(s);
+  $('#bt-rot').textContent = s > 0 ? 'Tempo restante' : 'Tempo encerrado';
+  $('#barra-tempo').classList.toggle('urgente', s > 0 && s <= 300);
+  $('#bt-aviso').style.display = (terminou || s === 0) ? 'none' : '';
+  if(s === 0){ clearInterval(compTimer); if(!terminou) compExpirou(); }
+}
+function compLigarBarra(){
+  clearInterval(compTimer); compTick(); compTimer = setInterval(compTick, 1000);
+  compBarra($$('.tela.ativa')[0] ? '#' + $$('.tela.ativa')[0].id : '#tela-capa');
+}
+function compExpirou(){
+  $('#exp-prim').textContent = PRIM_TER;
+  $('#btn-zap-expirou').href = 'https://wa.me/' + CONFIG.whatsappNumero + '?text=' + encodeURIComponent('Oi, ' + PRIM_TER + '! Abri o teste de travas mentais, mas o meu tempo acabou antes de eu terminar. Você pode me enviar um novo link?');
+  mostrarTela('#tela-expirou');
+}
+function compAvisoOrient(){
+  const velho = $('#aviso-nao-fechar'); if(velho) velho.remove();
+  if(!estado.acesso) return;
+  $('#tela-orientacao').insertAdjacentHTML('afterbegin', '<div class="aviso-fechar" id="aviso-nao-fechar" role="alert"><b>Não feche essa página.</b> Você pode não conseguir ter acesso novamente.<br>Você tem <b>' + (estado.acesso.duracaoMin || 30) + ' minutos</b> para responder, e o cronômetro já está rodando lá em cima.</div>');
+}
+
+/* --- entrar pelo link compartilhado: ocupa uma vaga numerada (ou retoma a que já é desta pessoa) --- */
+async function compRpc(nome, args){ const { data, error } = await clienteMembros().rpc(nome, args); return error ? { ok:false, erro:String(error.message||error) } : data; }
+async function compStatus(codigo, token){
+  if(!modoLocal()) return (await compRpc('travas_status_acesso', { p_codigo:codigo, p_token:token })) || { estado:'invalido' };
+  const c = ler(CHAVE_CODIGOS, []).find(x => x.codigo === codigo), a = c && (c.acessos||[]).find(x => x.token === token);
+  if(!a) return { estado:'invalido' };
+  return { estado: a.concluidoEm ? 'concluido' : (Date.now() > a.expiraEm ? 'expirado' : 'ativo'), numero:a.numero, agora:new Date().toISOString(),
+    expira_em:new Date(a.expiraEm).toISOString(), exibicao:codigo + '-' + a.numero, mostrar_resultado: c.mostrarResultado !== false, duracao_min: c.duracaoMin || 30 };
+}
+function compAplicar(codigo, d, token){
+  estado.acesso = { codigo, token, numero:d.numero, exibicao:d.exibicao || (codigo + '-' + d.numero), duracaoMin:d.duracao_min || 30,
+    expiraEm:Date.parse(d.expira_em), offset:Date.parse(d.agora) - Date.now() };
+  if(d.mostrar_resultado !== undefined) estado.mostrarResultado = d.mostrar_resultado !== false;
+  compLigarBarra();
+  return { ok:true };
+}
+async function compIniciar(codigo){
+  const chave = CHAVE_ACESSO + codigo, salva = ler(chave, null);
+  if(salva && salva.token){
+    const st = await compStatus(codigo, salva.token);
+    if(st.estado === 'ativo') return compAplicar(codigo, st, salva.token);
+    if(st.estado === 'concluido') return { ok:false, msg:'Você já respondeu este teste neste aparelho. Se precisar de ajuda, fale com a ' + PRIM_TER + '.' };
+    if(st.estado === 'expirado')  return { ok:false, msg:'O seu tempo para responder já acabou. Peça um novo link para a ' + PRIM_TER + '.' };
+  }
+  let ac;
+  if(!modoLocal()){
+    ac = await compRpc('travas_iniciar_acesso', { p_codigo:codigo });
+    if(!ac || ac.ok !== true) return { ok:false, msg:(ac && ac.msg) || 'Não consegui abrir agora. Confira a sua internet e tente de novo.' };
+  }else{
+    const lista = ler(CHAVE_CODIGOS, []), c = lista.find(x => x.codigo === codigo);
+    if(!c || !c.compartilhado) return { ok:false, msg:'Esse código não está valendo.' };
+    if((c.usos || 0) >= c.usosMax) return { ok:false, msg:'Este link atingiu o limite de acessos. Fale com a ' + PRIM_TER + ' para receber um novo.' };
+    c.usos = (c.usos || 0) + 1; c.acessos = c.acessos || [];
+    const agora = Date.now(), dur = (c.duracaoMin || 30) * 60000, token = 'l' + Math.random().toString(36).slice(2) + agora.toString(36);
+    c.acessos.push({ numero:c.usos, token, iniciadoEm:agora, expiraEm:agora + dur, concluidoEm:null });
+    if(c.usos >= c.usosMax) c.usado = true;
+    guardar(CHAVE_CODIGOS, lista);
+    ac = { ok:true, numero:c.usos, token, agora:new Date(agora).toISOString(), expira_em:new Date(agora + dur).toISOString(), duracao_min:c.duracaoMin || 30,
+      exibicao:codigo + '-' + c.usos, mostrar_resultado:c.mostrarResultado !== false };
+  }
+  guardar(chave, { token:ac.token });
+  return compAplicar(codigo, ac, ac.token);
+}
+function compLocalConcluir(){
+  const lista = ler(CHAVE_CODIGOS, []), c = lista.find(x => x.codigo === estado.acesso.codigo), a = c && (c.acessos||[]).find(x => x.token === estado.acesso.token);
+  if(a){ a.concluidoEm = Date.now(); guardar(CHAVE_CODIGOS, lista); }
+}
+function compLocalValido(c){
+  if(c.usado || (c.usos || 0) >= c.usosMax) return { ok:false, msg:'Este link atingiu o limite de acessos. Fale com a ' + PRIM_TER + ' para receber um novo.' };
+  return { ok:true, mostrar:(c.mostrarResultado !== false), cliente:'', compartilhado:true, duracao:c.duracaoMin || 30 };
+}
+/* ao abrir o link: avisa já na capa que existe cronômetro (ou que o link acabou), sem gastar vaga */
+(async function(){
+  try{
+    const bruto = new URLSearchParams(location.search).get('c') || '';
+    const c = bruto.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,9);
+    if(!c) return;
+    const r = await validarCodigo(c);
+    if(r.ok && r.compartilhado) $('#dica-codigo').textContent = 'O seu código já está preenchido. Ao tocar em Entrar, você terá ' + (r.duracao || 30) + ' minutos para responder, com cronômetro na tela. Não feche a página depois de entrar.';
+    else if(!r.ok) avisar('#aviso-codigo', r.msg);
+  }catch(e){}
+})();
+
+/* --- área da terapeuta: gerar o MESMO código para várias pessoas --- */
+let compModoSel = 'uni';
+const compModo = () => compModoSel === 'comp';
+$$('#alt-modo button').forEach(b => b.addEventListener('click', () => {
+  compModoSel = b.dataset.v;
+  $$('#alt-modo button').forEach(x => { const on = x === b; x.classList.toggle('ativa', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
+  $('#bloco-comp').style.display = compModo() ? '' : 'none';
+  ['#cod-nome', '#cod-whats', '#cod-qtd'].forEach(s => { $(s).closest('.campo').style.display = compModo() ? 'none' : ''; });
+  $('#btn-gerar').textContent = compModo() ? 'Gerar código compartilhado' : 'Gerar código';
+  $('#caixa-codigo').innerHTML = '';
+}));
+$('#comp-qtd').addEventListener('change', e => { $('#comp-qtd-outro').style.display = e.target.value === 'x' ? '' : 'none'; });
+async function compGerar(){
+  const b = $('#btn-gerar'), mostrar = mostrarSel, nome = $('#comp-nome').value.trim();
+  const usosMax = $('#comp-qtd').value === 'x' ? Math.floor(+$('#comp-qtd-outro').value) : +$('#comp-qtd').value;
+  if(!(usosMax >= 1 && usosMax <= 1000)){ $('#caixa-codigo').innerHTML = '<div class="aviso ver">Escolha de 1 a 1000 pessoas.</div>'; return; }
+  b.disabled = true; b.textContent = 'Gerando...';
+  let codigo = novoCodigo();
+  if(!modoLocal()){
+    const r = await api(ACOES.gerarCodigo, { codigo, cliente:nome, whatsapp:'', mostrar, compartilhado:true, usosMax });
+    if(!r || r.ok === false){ b.disabled = false; b.textContent = 'Gerar código compartilhado'; $('#caixa-codigo').innerHTML = '<div class="aviso ver">Não consegui gerar o código agora. Saia da área, entre de novo e tente outra vez.</div>'; return; }
+    codigo = r.codigo;
+  }else{
+    const lista = ler(CHAVE_CODIGOS, []);
+    lista.unshift({ codigo, cliente:nome, whatsapp:'', criadoEm:hoje(), usado:false, mostrarResultado:mostrar, compartilhado:true, usosMax, usos:0, duracaoMin:30, acessos:[] });
+    guardar(CHAVE_CODIGOS, lista);
+  }
+  b.disabled = false; b.textContent = 'Gerar código compartilhado';
+  $('#caixa-codigo').innerHTML = `
+    <div class="codigo-gerado">
+      <div class="valor">${codigo}</div>
+      <div class="para">${nome ? escH(nome) + ' · ' : ''}vale para ${usosMax} ${usosMax === 1 ? 'pessoa' : 'pessoas'} · ${mostrar ? 'a pessoa vê o resultado no final' : 'só você vê o resultado'}</div>
+    </div>
+    <div class="aviso ver" style="margin-top:12px">Coloque <b>este link</b> no seu anúncio, post ou página. Cada pessoa que entrar ocupa uma vaga numerada (${codigo}-1, ${codigo}-2…) e tem 30 minutos para responder.</div>
+    <div class="linha-item" style="margin-top:10px"><span class="esq"><span class="sub" style="white-space:normal;word-break:break-all">${linkDoTeste(codigo)}</span></span></div>
+    <button class="btn btn-argila" id="btn-copiar-link-c">Copiar o link da campanha</button>
+    <button class="btn btn-contorno" id="btn-copiar-codigo-c">Copiar só o código</button>`;
+  $('#btn-copiar-link-c').addEventListener('click', async e => { try{ await navigator.clipboard.writeText(linkDoTeste(codigo)); e.target.textContent = 'Link copiado!'; }catch(err){ e.target.textContent = 'Não consegui copiar'; } setTimeout(() => { e.target.textContent = 'Copiar o link da campanha'; }, 2000); });
+  $('#btn-copiar-codigo-c').addEventListener('click', async e => { try{ await navigator.clipboard.writeText(codigo); e.target.textContent = 'Copiado!'; }catch(err){ e.target.textContent = 'Não consegui copiar'; } setTimeout(() => { e.target.textContent = 'Copiar só o código'; }, 2000); });
+  carregarCodigos();
+}
+async function compContarAcessos(c, uid, codigos){
+  const mapa = { entraram:{}, concluidos:{} };
+  if(!(codigos || []).some(x => x.compartilhado)) return mapa;
+  const { data } = await c.from('travas_acessos').select('codigo_id,concluido_em').eq('terapeuta_id', uid).limit(5000);
+  (data || []).forEach(a => { mapa.entraram[a.codigo_id] = (mapa.entraram[a.codigo_id] || 0) + 1; if(a.concluido_em) mapa.concluidos[a.codigo_id] = (mapa.concluidos[a.codigo_id] || 0) + 1; });
+  return mapa;
+}
+function compLinhaCodigo(c){
+  const ativo = !c.usado, entr = c.entraram !== undefined ? c.entraram : (c.usos || 0);
+  const concl = c.concluidos !== undefined ? c.concluidos : (c.acessos || []).filter(a => a.concluidoEm).length;
+  return `<div class="linha-item" style="flex-wrap:wrap">
+      <span class="esq">
+        <span class="nome" style="white-space:normal">${c.codigo}${c.cliente ? ' · ' + escH(c.cliente) : ''}<span class="tag-vis">mesmo código</span><span class="tag-vis">${c.mostrarResultado === false ? 'só você vê' : 'pessoa vê'}</span></span>
+        <span class="sub" style="white-space:normal">${c.usos !== undefined ? c.usos : entr} de ${c.usosMax} vagas usadas · ${concl} concluíram · criado em ${c.criadoEm || ''}</span>
+      </span>
+      <span class="etiqueta ${ativo ? 'livre' : 'usado'}">${ativo ? 'ativo' : 'esgotado'}</span>
+      <span style="display:flex;gap:8px;width:100%;margin-top:8px"><button type="button" class="mini-btn" data-comp-link="${c.codigo}">Copiar link</button>${ativo ? `<button type="button" class="mini-btn" data-comp-fim="${c.codigo}">Encerrar link</button>` : ''}</span>
+    </div>`;
+}
+async function compEncerrar(codigo){
+  if(!modoLocal()) return await compRpc('travas_encerrar_codigo', { p_codigo:codigo });
+  const lista = ler(CHAVE_CODIGOS, []), c = lista.find(x => x.codigo === codigo);
+  if(c){ c.usado = true; c.usosMax = Math.max(c.usos || 0, 1); guardar(CHAVE_CODIGOS, lista); }
+  return { ok:true };
+}
+function compLigarLista(){
+  $$('[data-comp-link]').forEach(b => b.addEventListener('click', async () => {
+    try{ await navigator.clipboard.writeText(linkDoTeste(b.dataset.compLink)); b.textContent = 'Copiado!'; }catch(err){ b.textContent = 'Não consegui'; }
+    setTimeout(() => { b.textContent = 'Copiar link'; }, 1800);
+  }));
+  $$('[data-comp-fim]').forEach(b => b.addEventListener('click', async () => {
+    if(!confirm('Encerrar este link? Ninguém novo poderá entrar. Quem já entrou ainda pode terminar o teste.')) return;
+    await compEncerrar(b.dataset.compFim); carregarCodigos();
+  }));
+}
 function prepararOrientacao(){
+  compAvisoOrient();
   $('#orient-passo3').innerHTML = estado.mostrarResultado
     ? '<b>Você vê o seu resultado.</b> No final aparece o mapa das suas 10 travas, da mais forte para a mais leve, e o que cada uma significa.'
     : '<b>A Bárbara recebe o seu resultado.</b> Ela vai analisar com carinho e te chamar para conversarem sobre ele.';
@@ -1328,7 +1564,7 @@ $('#btn-copiar').addEventListener('click', async () => {
 
 async function enviarResultado(r){
   const pacote = {
-    codigo:estado.codigo, nome:estado.nome, idade:estado.idade, genero:estado.genero,
+    codigo:(estado.acesso ? estado.acesso.exibicao : estado.codigo), nome:estado.nome, idade:estado.idade, genero:estado.genero,
     whatsapp:estado.whatsapp, email:estado.email, profissao:estado.profissao, renda:estado.renda,
     motivo:estado.motivo, dor:estado.dor, olhar:estado.olhar,
     data:hoje(), geral:r.geral, altas:r.altas, medias:r.medias, baixas:r.baixas,
@@ -1342,11 +1578,11 @@ async function enviarResultado(r){
   const lista = ler(CHAVE_RESP, []); lista.unshift(pacote); guardar(CHAVE_RESP, lista);
 
   if(modoLocal()){
-    marcarUsadoLocal(estado.codigo, estado.nome);
+    if(estado.acesso) compLocalConcluir(); else marcarUsadoLocal(estado.codigo, estado.nome);
     $('#nota-envio').textContent = 'Resultado salvo neste aparelho (a planilha ainda não foi conectada).';
     return;
   }
-  const resp = await api(ACOES.salvarResposta, pacote);
+  const resp = await api(ACOES.salvarResposta, estado.acesso ? Object.assign({}, pacote, { codigo:estado.codigo }) : pacote, estado.acesso ? estado.acesso.token : null);
   const msgEnvio = (resp && resp.ok === false)
     ? 'Não consegui registrar agora. Toque no botão verde para enviar o seu resultado direto para a Bárbara.'
     : 'Pronto: a Bárbara já recebeu o seu resultado.';
@@ -1486,6 +1722,7 @@ function mensagemConvite(primeiro, codigo, mostrar){
   ].join('\n');
 }
 $('#btn-gerar').addEventListener('click', async ()=>{
+  if(compModo()) return compGerar();
   const b = $('#btn-gerar');
   const qtd = Math.max(1, +$('#cod-qtd').value || 1);
   const nomeCli = qtd === 1 ? $('#cod-nome').value.trim() : '';
@@ -1569,7 +1806,7 @@ async function carregarCodigos(){
     if(r && Array.isArray(r.codigos)) lista = r.codigos; else if(Array.isArray(r)) lista = r;
   }
   if(!lista.length){ caixa.innerHTML='<div class="vazio">Nenhum código ainda. Gere o primeiro acima.</div>'; return; }
-  caixa.innerHTML = lista.map(c=>`
+  caixa.innerHTML = lista.map(c=> c.compartilhado ? compLinhaCodigo(c) : `
     <div class="linha-item">
       <span class="esq">
         <span class="nome">${c.codigo}${c.cliente ? ' · ' + c.cliente : ''}<span class="tag-vis">${c.mostrarResultado === false ? 'só você vê' : 'cliente vê'}</span></span>
@@ -1577,6 +1814,7 @@ async function carregarCodigos(){
       </span>
       <span class="etiqueta ${c.usado?'usado':'livre'}">${c.usado?'usado':'disponível'}</span>
     </div>`).join('');
+  compLigarLista();
 }
 
 /* ---- respostas ---- */
@@ -1599,7 +1837,7 @@ function desenharRespostas(lista){
     const nivel = top ? nivelDe(top.nota) : 'baixa';
     return `<button class="linha-item" data-i="${i}">
       <span class="esq">
-        <span class="nome">${escH(r.nome||'Sem nome')}${r.idade ? ', ' + escH(r.idade) : ''}</span>
+        <span class="nome">${escH(r.nome||'Sem nome')}${r.idade ? ', ' + escH(r.idade) : ''}${/-\d+$/.test(r.codigo||'') ? '<span class="tag-vis">' + escH(r.codigo) + '</span>' : ''}</span>
         <span class="sub">${r.data||''}${top ? ' · ' + top.nome : ''}</span>
       </span>
       <span class="etiqueta e-${nivel}">${contarNivel(r,'alta')} altas</span>
@@ -1829,7 +2067,7 @@ function abrirDetalhe(r){
 
   $('#detalhe-conteudo').innerHTML = `
     <h2 style="font-size:26px;margin:10px 0 4px">${escH(r.nome||'Sem nome')}</h2>
-    <p style="color:var(--tinta-suave);font-size:16px;margin-bottom:16px">${escH(r.data||'')} · ${res.altas} travas altas</p>
+    <p style="color:var(--tinta-suave);font-size:16px;margin-bottom:16px">${escH(r.data||'')} · ${res.altas} travas altas${/-\d+$/.test(r.codigo||'') ? ' · código ' + escH(r.codigo) : ''}</p>
 
     <div class="ficha">
       <dl>
