@@ -387,6 +387,22 @@ body.com-tempo{padding-top:60px}
 @media (prefers-reduced-motion:reduce){#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:none;outline:3px solid #1FA055;outline-offset:3px}}
 @media print{#barra-tempo{display:none!important}body.com-tempo{padding-top:0}}
 </style>
+<style id="css-urgencia">
+/* o botão de falar com a terapeuta pisca na MESMA cor dele (o verde do próprio botão), para chamar a atenção */
+@keyframes urg-pisca{0%,100%{box-shadow:0 0 0 0 rgba(47,122,82,.7);transform:scale(1);filter:brightness(1)}50%{box-shadow:0 0 0 16px rgba(47,122,82,0);transform:scale(1.035);filter:brightness(1.2)}}
+#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:urg-pisca 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:none;outline:3px solid #2F7A52;outline-offset:3px}}
+/* cartão de urgência: cronômetro de 60 segundos em vermelho */
+.urg{background:#FCEEEC;border:1.5px solid #E3B3AE;border-radius:16px;padding:14px 16px 16px;margin:22px 0 16px;color:#4A1511;text-align:left}
+.urg-topo{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.urg-rot{font-size:13.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#8E1F17;line-height:1.25}
+.urg-num{font-family:inherit;font-weight:700;font-size:36px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:.02em;color:#C0281C}
+.urg-barra{height:5px;background:#F1D0CC;border-radius:99px;margin:11px 0 12px;overflow:hidden}
+.urg-barra i{display:block;height:100%;width:100%;background:#C0281C;border-radius:99px;transition:width 1s linear}
+.urg-msg{margin:0;font-size:16.5px;line-height:1.5}
+.urg.fim .urg-num{color:#8E1F17}
+@media print{.urg{display:none!important}}
+</style>
 <style id="css-apres">
 #ap-overlay{position:fixed;inset:0;z-index:3000;background:#05070d;display:none}
 #ap-overlay.ativo{display:block}
@@ -995,7 +1011,7 @@ const estado = {
 
 function guardar(c,v){ try{ localStorage.setItem(c, JSON.stringify(v)); }catch(e){} }
 function ler(c,p){ try{ const v = localStorage.getItem(c); return v ? JSON.parse(v) : p; }catch(e){ return p; } }
-function mostrarTela(id){ $$('.tela').forEach(t=>t.classList.remove('ativa')); $(id).classList.add('ativa'); window.scrollTo({top:0,behavior:'auto'}); if(typeof compBarra === 'function') compBarra(id); }
+function mostrarTela(id){ $$('.tela').forEach(t=>t.classList.remove('ativa')); $(id).classList.add('ativa'); if(typeof urgInicio === 'function') urgInicio(id); window.scrollTo({top:0,behavior:'auto'}); if(typeof compBarra === 'function') compBarra(id); }
 function avisar(id,txt){ const el=$(id); if(!txt){el.classList.remove('ver');el.textContent='';return;} el.textContent=txt; el.classList.add('ver'); }
 function hoje(){ return new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function zapNumero(bruto){ let n=String(bruto||'').replace(/\D/g,''); if(!n) return ''; if(n.length<=11) n='55'+n; return n; }
@@ -1359,6 +1375,43 @@ function compLigarLista(){
     if(!confirm('Encerrar este link? Ninguém novo poderá entrar. Quem já entrou ainda pode terminar o teste.')) return;
     await compEncerrar(b.dataset.compFim); carregarCodigos();
   }));
+}
+/* abrir direto a área da terapeuta: endereço-do-site#admin (usado pelo botão do site com vários testes) */
+window.addEventListener('load', () => { if(location.hash === '#admin'){ const la = $('#link-admin'); if(la) la.click(); } });
+/* ============================================================================
+   URGÊNCIA NO FIM DO TESTE: cronômetro vermelho de 60 segundos + mensagem, ao lado do botão de WhatsApp
+   O relógio começa quando o cartão aparece na tela da pessoa (o resultado é longo; assim ela não perde o tempo rolando).
+   ============================================================================ */
+const URG_SEGUNDOS = 60;
+const URG_PRIM = (CONFIG.terapeuta || '').split(' ')[0];
+let urgTimer = null;
+const urgTextoAntes = () => '<b>O que você sentiu ao responder está vivo agora.</b> Este é o melhor momento para transformar clareza em ação. Fale com a ' + URG_PRIM + ' nos próximos 60 segundos e receba a orientação para o seu próximo passo.';
+const urgTextoDepois = () => '<b>A porta continua aberta.</b> A ' + URG_PRIM + ' está pronta para te receber: toque no botão e comece a sua conversa.';
+function urgInicio(id){
+  if(id !== '#tela-resultado' && id !== '#tela-obrigada') return;
+  const btn = $(id === '#tela-resultado' ? '#btn-zap-resultado' : '#btn-zap-obrigada'); if(!btn) return;
+  const velho = $('#urg-card'); if(velho) velho.remove();
+  const card = document.createElement('div');
+  card.id = 'urg-card'; card.className = 'urg'; card.setAttribute('role', 'group'); card.setAttribute('aria-label', 'Convite para falar agora');
+  card.innerHTML = '<div class="urg-topo"><span class="urg-rot">Fale com a ' + URG_PRIM + ' agora</span><b class="urg-num" id="urg-num">01:00</b></div>'
+    + '<div class="urg-barra" aria-hidden="true"><i id="urg-barra"></i></div><p class="urg-msg" id="urg-msg"></p>';
+  btn.insertAdjacentElement('beforebegin', card);
+  clearInterval(urgTimer); urgTick();
+  if(estado.urgInicio){ urgTimer = setInterval(urgTick, 1000); return; }          // já começou antes: continua de onde estava
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver(es => { if(es.some(e => e.isIntersecting)){ io.disconnect(); urgIniciar(); } }, { threshold:0.6 });
+    io.observe(card);
+  }else urgIniciar();
+}
+function urgIniciar(){ if(!estado.urgInicio) estado.urgInicio = Date.now(); clearInterval(urgTimer); urgTick(); urgTimer = setInterval(urgTick, 1000); }
+function urgTick(){
+  const num = $('#urg-num'); if(!num) return;
+  const resta = estado.urgInicio ? Math.max(0, URG_SEGUNDOS - Math.floor((Date.now() - estado.urgInicio) / 1000)) : URG_SEGUNDOS;
+  num.textContent = String(Math.floor(resta / 60)).padStart(2, '0') + ':' + String(resta % 60).padStart(2, '0');
+  $('#urg-barra').style.width = (resta / URG_SEGUNDOS * 100) + '%';
+  $('#urg-msg').innerHTML = resta > 0 ? urgTextoAntes() : urgTextoDepois();
+  $('#urg-card').classList.toggle('fim', resta === 0);
+  if(resta === 0) clearInterval(urgTimer);
 }
 function prepararOrientacao(){
   compAvisoOrient();
