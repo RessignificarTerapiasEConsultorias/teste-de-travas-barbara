@@ -388,10 +388,24 @@ body.com-tempo{padding-top:60px}
 @media print{#barra-tempo{display:none!important}body.com-tempo{padding-top:0}}
 </style>
 <style id="css-urgencia">
-/* o botão de falar com a terapeuta pisca na MESMA cor dele (o verde do próprio botão), para chamar a atenção */
-@keyframes urg-pisca{0%,100%{box-shadow:0 0 0 0 rgba(47,122,82,.7);transform:scale(1);filter:brightness(1)}50%{box-shadow:0 0 0 16px rgba(47,122,82,0);transform:scale(1.035);filter:brightness(1.2)}}
-#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:urg-pisca 1.2s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:none;outline:3px solid #2F7A52;outline-offset:3px}}
+/* BOTÃO VERDE DO WHATSAPP: pisca SEMPRE (com ou sem o cronômetro), na MESMA cor dele, e é mais atrativo */
+@keyframes urg-pisca{
+  0%,100%{box-shadow:0 0 0 0 rgba(22,148,71,.8),0 14px 26px -10px rgba(14,123,58,.75),inset 0 1.5px 0 rgba(255,255,255,.4);transform:scale(1);filter:brightness(1)}
+  50%{box-shadow:0 0 0 18px rgba(22,148,71,0),0 14px 26px -10px rgba(14,123,58,.75),inset 0 1.5px 0 rgba(255,255,255,.4);transform:scale(1.04);filter:brightness(1.18)}}
+@keyframes urg-brilho{0%,55%{left:-70%}100%{left:130%}}
+#btn-zap-resultado,#btn-zap-obrigada,#btn-zap-expirou{position:relative;overflow:hidden;isolation:isolate;min-height:72px;padding:14px 18px;border-radius:20px;
+  background:linear-gradient(135deg,#25A55A 0%,#169447 48%,#0E7B3A 100%);color:#fff;border:2px solid rgba(255,255,255,.3);
+  box-shadow:0 14px 26px -10px rgba(14,123,58,.75),inset 0 1.5px 0 rgba(255,255,255,.4);gap:14px;align-items:center;justify-content:flex-start;
+  animation:urg-pisca 1.2s ease-in-out infinite}
+#btn-zap-resultado:hover,#btn-zap-obrigada:hover,#btn-zap-expirou:hover{background:linear-gradient(135deg,#2BB362 0%,#18A04C 48%,#0F8640 100%)}
+#btn-zap-resultado>*,#btn-zap-obrigada>*,#btn-zap-expirou>*{position:relative;z-index:1}
+#btn-zap-resultado::after,#btn-zap-obrigada::after,#btn-zap-expirou::after{content:'';position:absolute;top:0;left:-70%;width:38%;height:100%;z-index:0;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg);animation:urg-brilho 2.8s ease-in-out infinite}
+#btn-zap-resultado svg,#btn-zap-obrigada svg,#btn-zap-expirou svg{flex:none;width:40px;height:40px;padding:8px;border-radius:50%;background:rgba(255,255,255,.22)}
+#btn-zap-resultado .duas,#btn-zap-obrigada .duas,#btn-zap-expirou .duas{font-size:18.5px;font-weight:800;line-height:1.2;letter-spacing:.005em}
+#btn-zap-resultado .duas small,#btn-zap-obrigada .duas small,#btn-zap-expirou .duas small{font-size:13.5px;font-weight:600;opacity:.96;margin-top:3px;letter-spacing:0}
+@media (prefers-reduced-motion:reduce){#btn-zap-obrigada,#btn-zap-resultado,#btn-zap-expirou{animation:none;outline:3px solid #0E7B3A;outline-offset:3px}
+  #btn-zap-resultado::after,#btn-zap-obrigada::after,#btn-zap-expirou::after{animation:none;display:none}}
 /* cartão de urgência: cronômetro de 60 segundos em vermelho */
 .urg{background:#FCEEEC;border:1.5px solid #E3B3AE;border-radius:16px;padding:14px 16px 16px;margin:22px 0 16px;color:#4A1511;text-align:left}
 .urg-topo{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -402,6 +416,17 @@ body.com-tempo{padding-top:60px}
 .urg-msg{margin:0;font-size:16.5px;line-height:1.5}
 .urg.fim .urg-num{color:#8E1F17}
 @media print{.urg{display:none!important}}
+</style>
+<style id="css-capa">
+/* botão da capa: pisca na própria cor quando o código está preenchido */
+@keyframes capa-pisca{
+  0%,100%{box-shadow:0 0 0 0 rgba(var(--pulso-rgb,34,54,44),.7),var(--sombra-leve);transform:scale(1);filter:brightness(1)}
+  50%{box-shadow:0 0 0 15px rgba(var(--pulso-rgb,34,54,44),0),var(--sombra-leve);transform:scale(1.03);filter:brightness(1.4)}}
+#btn-entrar:not(:disabled){min-height:68px;font-size:20px;font-weight:800;letter-spacing:.01em;animation:capa-pisca 1.3s ease-in-out infinite}
+#btn-entrar:not(:disabled)::after{content:'\2192';font-weight:700;margin-left:2px}
+@media (prefers-reduced-motion:reduce){#btn-entrar:not(:disabled){animation:none;outline:3px solid var(--ardosia);outline-offset:3px}}
+#dica-codigo.pronto{color:#1B6B3E;font-weight:600;font-size:15.5px;line-height:1.4}
+#dica-codigo .ok-pre{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#1B6B3E;color:#fff;font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
 </style>
 <style id="css-apres">
 #ap-overlay{position:fixed;inset:0;z-index:3000;background:#05070d;display:none}
@@ -726,6 +751,14 @@ body.ap-aberto{overflow:hidden}
           </div>
         </div>
         <div class="campo">
+          <label id="rot-alt-urg">Cronômetro de urgência de 60 segundos no final?</label>
+          <div class="alternar" id="alt-urgencia" role="radiogroup" aria-labelledby="rot-alt-urg">
+            <button type="button" class="ativa" data-v="1" role="radio" aria-checked="true">Sim, ligado<small>cartão vermelho de 60 s ao lado do botão de WhatsApp</small></button>
+            <button type="button" data-v="0" role="radio" aria-checked="false">Não<small>sem cronômetro, só o botão piscando</small></button>
+          </div>
+          <div class="dica">O botão verde de WhatsApp pisca sempre, com ou sem o cronômetro.</div>
+        </div>
+        <div class="campo">
           <label id="rot-modo-cod">Como será o código?</label>
           <div class="alternar" id="alt-modo" role="radiogroup" aria-labelledby="rot-modo-cod">
             <button type="button" class="ativa" data-v="uni" role="radio" aria-checked="true">Individual<small>um código por pessoa</small></button>
@@ -737,7 +770,7 @@ body.ap-aberto{overflow:hidden}
             <label for="comp-qtd">Quantas pessoas podem usar o link?</label>
             <select id="comp-qtd"><option>1</option><option>3</option><option>5</option><option>10</option><option>20</option><option>30</option><option selected>50</option><option>100</option><option>200</option><option>500</option><option value="x">Outro número…</option></select>
             <input id="comp-qtd-outro" type="number" min="1" max="1000" placeholder="De 1 a 1000" style="display:none;margin-top:8px;max-width:180px">
-            <div class="dica">Cada pessoa que tocar em Entrar ocupa uma vaga e tem <b>30 minutos</b> para responder, com cronômetro na tela. Quando as vagas acabam, o link para de aceitar novas pessoas.</div>
+            <div class="dica">Cada pessoa que tocar em “Fazer o teste agora” ocupa uma vaga e tem <b>30 minutos</b> para responder, com cronômetro na tela. Quando as vagas acabam, o link para de aceitar novas pessoas.</div>
           </div>
           <div class="campo">
             <label for="comp-nome">Nome da campanha <span class="opc">(opcional)</span></label>
@@ -1097,7 +1130,7 @@ async function api(acao, dados, token){
     if(acao === ACOES.gerarCodigo){
       let codigo = dados.codigo;
       for(let t=0; t<6; t++){
-        const { error } = await c.from('travas_codigos').insert({ terapeuta_id:uid, codigo, cliente:dados.cliente||null, whatsapp:dados.whatsapp||null, mostrar_resultado: dados.mostrar !== false, ...(dados.compartilhado ? { compartilhado:true, usos_max:dados.usosMax } : {}) });
+        const { error } = await c.from('travas_codigos').insert({ terapeuta_id:uid, codigo, cliente:dados.cliente||null, whatsapp:dados.whatsapp||null, mostrar_resultado: dados.mostrar !== false, urgencia: dados.urgencia !== false, ...(dados.compartilhado ? { compartilhado:true, usos_max:dados.usosMax } : {}) });
         if(!error) return { ok:true, codigo };
         if(error.code === '23505'){ codigo = novoCodigo(); continue; }   // código repetido: sorteia outro
         return { ok:false, erro:String(error.message||error) };
@@ -1136,7 +1169,7 @@ async function validarCodigo(codigo){
   if(!modoLocal()){
     const r = await api(ACOES.validarCodigo,{codigo});
     if(r && r.ok === false && r.erro) return {ok:false, msg:'Não consegui verificar agora. Confira a sua internet e tente de novo.'};
-    if(r && (r.valido === true || r.ok === true)) return {ok:true, mostrar: r.mostrar_resultado !== false, cliente: r.cliente || '', compartilhado: r.compartilhado === true, duracao: r.duracao_min || 30};
+    if(r && (r.valido === true || r.ok === true)) return {ok:true, mostrar: r.mostrar_resultado !== false, urgencia: r.urgencia !== false, cliente: r.cliente || '', compartilhado: r.compartilhado === true, duracao: r.duracao_min || 30};
     return {ok:false, msg:(r && r.msg) || 'Esse código não está valendo. Ele já foi usado ou foi digitado diferente.'};
   }
   const lista = ler(CHAVE_CODIGOS, []);
@@ -1144,7 +1177,7 @@ async function validarCodigo(codigo){
   if(!achado) return {ok:false, msg:'Esse código não existe. Confira as letras e tente de novo.'};
   if(achado.compartilhado) return compLocalValido(achado);
   if(achado.usado) return {ok:false, msg:'Esse código já foi usado. Peça um novo para a Bárbara.'};
-  return {ok:true, mostrar:(achado.mostrarResultado !== false), cliente: achado.cliente || ''};
+  return {ok:true, mostrar:(achado.mostrarResultado !== false), urgencia:(achado.urgencia !== false), cliente: achado.cliente || ''};
 }
 function marcarUsadoLocal(codigo, nome){
   const lista = ler(CHAVE_CODIGOS, []);
@@ -1161,7 +1194,7 @@ $('#campo-codigo').addEventListener('input', e => {
   avisar('#aviso-codigo','');
   const b = $('#btn-entrar');
   b.disabled = e.target.value.length < 5;
-  b.textContent = b.disabled ? 'Digite o código' : 'Entrar';
+  b.textContent = b.disabled ? 'Digite o código' : 'Fazer o teste agora';
 });
 $('#campo-codigo').addEventListener('keydown', e => { if(e.key==='Enter' && !$('#btn-entrar').disabled) $('#btn-entrar').click(); });
 
@@ -1170,15 +1203,16 @@ $('#btn-entrar').addEventListener('click', async () => {
   const codigo = $('#campo-codigo').value.trim().toUpperCase();
   b.disabled = true; b.textContent = 'Verificando o código...';
   const r = await validarCodigo(codigo);
-  if(!r.ok){ b.disabled=false; b.textContent='Entrar'; avisar('#aviso-codigo', r.msg); return; }
+  if(!r.ok){ b.disabled=false; b.textContent='Fazer o teste agora'; avisar('#aviso-codigo', r.msg); return; }
   estado.codigo = codigo;
   estado.mostrarResultado = r.mostrar !== false;
+  estado.urgencia = r.urgencia !== false;
   estado.acesso = null;
   if(r.compartilhado){
     const ac = await compIniciar(codigo);
-    if(!ac.ok){ b.disabled = false; b.textContent = 'Entrar'; avisar('#aviso-codigo', ac.msg); return; }
+    if(!ac.ok){ b.disabled = false; b.textContent = 'Fazer o teste agora'; avisar('#aviso-codigo', ac.msg); return; }
   }
-  b.textContent = 'Entrar';
+  b.textContent = 'Fazer o teste agora';
   if(r.cliente && !$('#campo-nome').value.trim()){ $('#campo-nome').value = r.cliente; $('#campo-nome').dispatchEvent(new Event('input')); }
   prepararOrientacao();
   mostrarTela('#tela-orientacao');
@@ -1189,13 +1223,13 @@ $('#voltar-dados1').addEventListener('click', ()=> mostrarTela('#tela-dados1'));
 /* ---- código já preenchido pelo link (?c=CODIGO) ---- */
 (function(){
   try{
-    const bruto = new URLSearchParams(location.search).get('c') || '';
+    const bruto = (function(q){ return q.get('c') || q.get('codigo') || q.get('code') || ''; })(new URLSearchParams(location.search));
     const c = bruto.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,9);
     if(!c) return;
     const campo = $('#campo-codigo');
     campo.value = c;
     campo.dispatchEvent(new Event('input'));
-    $('#dica-codigo').textContent = 'O seu código já está preenchido. É só tocar em Entrar.';
+    $('#dica-codigo').innerHTML = '<span class="ok-pre" aria-hidden="true">✔</span> Código já preenchido. É só tocar em <b>“Fazer o teste agora”</b>.'; $('#dica-codigo').classList.add('pronto');
   }catch(e){}
 })();
 /* ============================================================================
@@ -1244,12 +1278,13 @@ async function compStatus(codigo, token){
   const c = ler(CHAVE_CODIGOS, []).find(x => x.codigo === codigo), a = c && (c.acessos||[]).find(x => x.token === token);
   if(!a) return { estado:'invalido' };
   return { estado: a.concluidoEm ? 'concluido' : (Date.now() > a.expiraEm ? 'expirado' : 'ativo'), numero:a.numero, agora:new Date().toISOString(),
-    expira_em:new Date(a.expiraEm).toISOString(), exibicao:codigo + '-' + a.numero, mostrar_resultado: c.mostrarResultado !== false, duracao_min: c.duracaoMin || 30 };
+    expira_em:new Date(a.expiraEm).toISOString(), exibicao:codigo + '-' + a.numero, mostrar_resultado: c.mostrarResultado !== false, urgencia: c.urgencia !== false, duracao_min: c.duracaoMin || 30 };
 }
 function compAplicar(codigo, d, token){
   estado.acesso = { codigo, token, numero:d.numero, exibicao:d.exibicao || (codigo + '-' + d.numero), duracaoMin:d.duracao_min || 30,
     expiraEm:Date.parse(d.expira_em), offset:Date.parse(d.agora) - Date.now() };
   if(d.mostrar_resultado !== undefined) estado.mostrarResultado = d.mostrar_resultado !== false;
+  if(d.urgencia !== undefined) estado.urgencia = d.urgencia !== false;
   compLigarBarra();
   return { ok:true };
 }
@@ -1275,7 +1310,7 @@ async function compIniciar(codigo){
     if(c.usos >= c.usosMax) c.usado = true;
     guardar(CHAVE_CODIGOS, lista);
     ac = { ok:true, numero:c.usos, token, agora:new Date(agora).toISOString(), expira_em:new Date(agora + dur).toISOString(), duracao_min:c.duracaoMin || 30,
-      exibicao:codigo + '-' + c.usos, mostrar_resultado:c.mostrarResultado !== false };
+      exibicao:codigo + '-' + c.usos, mostrar_resultado:c.mostrarResultado !== false, urgencia:c.urgencia !== false };
   }
   guardar(chave, { token:ac.token });
   return compAplicar(codigo, ac, ac.token);
@@ -1286,16 +1321,16 @@ function compLocalConcluir(){
 }
 function compLocalValido(c){
   if(c.usado || (c.usos || 0) >= c.usosMax) return { ok:false, msg:'Este link atingiu o limite de acessos. Fale com a ' + PRIM_TER + ' para receber um novo.' };
-  return { ok:true, mostrar:(c.mostrarResultado !== false), cliente:'', compartilhado:true, duracao:c.duracaoMin || 30 };
+  return { ok:true, mostrar:(c.mostrarResultado !== false), urgencia:(c.urgencia !== false), cliente:'', compartilhado:true, duracao:c.duracaoMin || 30 };
 }
 /* ao abrir o link: avisa já na capa que existe cronômetro (ou que o link acabou), sem gastar vaga */
 (async function(){
   try{
-    const bruto = new URLSearchParams(location.search).get('c') || '';
+    const bruto = (function(q){ return q.get('c') || q.get('codigo') || q.get('code') || ''; })(new URLSearchParams(location.search));
     const c = bruto.toUpperCase().replace(/[^A-Z0-9-]/g,'').slice(0,9);
     if(!c) return;
     const r = await validarCodigo(c);
-    if(r.ok && r.compartilhado) $('#dica-codigo').textContent = 'O seu código já está preenchido. Ao tocar em Entrar, você terá ' + (r.duracao || 30) + ' minutos para responder, com cronômetro na tela. Não feche a página depois de entrar.';
+    if(r.ok && r.compartilhado) { $('#dica-codigo').innerHTML = '<span class="ok-pre" aria-hidden="true">✔</span> Código já preenchido. Ao tocar em <b>“Fazer o teste agora”</b>, você terá ' + (r.duracao || 30) + ' minutos para responder, com cronômetro na tela. Não feche a página depois de entrar.'; $('#dica-codigo').classList.add('pronto'); }
     else if(!r.ok) avisar('#aviso-codigo', r.msg);
   }catch(e){}
 })();
@@ -1319,19 +1354,19 @@ async function compGerar(){
   b.disabled = true; b.textContent = 'Gerando...';
   let codigo = novoCodigo();
   if(!modoLocal()){
-    const r = await api(ACOES.gerarCodigo, { codigo, cliente:nome, whatsapp:'', mostrar, compartilhado:true, usosMax });
+    const r = await api(ACOES.gerarCodigo, { codigo, cliente:nome, whatsapp:'', mostrar, compartilhado:true, usosMax, urgencia:urgSel });
     if(!r || r.ok === false){ b.disabled = false; b.textContent = 'Gerar código compartilhado'; $('#caixa-codigo').innerHTML = '<div class="aviso ver">Não consegui gerar o código agora. Saia da área, entre de novo e tente outra vez.</div>'; return; }
     codigo = r.codigo;
   }else{
     const lista = ler(CHAVE_CODIGOS, []);
-    lista.unshift({ codigo, cliente:nome, whatsapp:'', criadoEm:hoje(), usado:false, mostrarResultado:mostrar, compartilhado:true, usosMax, usos:0, duracaoMin:30, acessos:[] });
+    lista.unshift({ codigo, cliente:nome, whatsapp:'', criadoEm:hoje(), usado:false, mostrarResultado:mostrar, compartilhado:true, usosMax, usos:0, duracaoMin:30, acessos:[], urgencia:urgSel });
     guardar(CHAVE_CODIGOS, lista);
   }
   b.disabled = false; b.textContent = 'Gerar código compartilhado';
   $('#caixa-codigo').innerHTML = `
     <div class="codigo-gerado">
       <div class="valor">${codigo}</div>
-      <div class="para">${nome ? escH(nome) + ' · ' : ''}vale para ${usosMax} ${usosMax === 1 ? 'pessoa' : 'pessoas'} · ${mostrar ? 'a pessoa vê o resultado no final' : 'só você vê o resultado'}</div>
+      <div class="para">${nome ? escH(nome) + ' · ' : ''}vale para ${usosMax} ${usosMax === 1 ? 'pessoa' : 'pessoas'} · ${mostrar ? 'a pessoa vê o resultado no final' : 'só você vê o resultado'} · ${urgSel ? 'com cronômetro de 60 s' : 'sem cronômetro de 60 s'}</div>
     </div>
     <div class="aviso ver" style="margin-top:12px">Coloque <b>este link</b> no seu anúncio, post ou página. Cada pessoa que entrar ocupa uma vaga numerada (${codigo}-1, ${codigo}-2…) e tem 30 minutos para responder.</div>
     <div class="linha-item" style="margin-top:10px"><span class="esq"><span class="sub" style="white-space:normal;word-break:break-all">${linkDoTeste(codigo)}</span></span></div>
@@ -1382,6 +1417,16 @@ window.addEventListener('load', () => { if(location.hash === '#admin'){ const la
    URGÊNCIA NO FIM DO TESTE: cronômetro vermelho de 60 segundos + mensagem, ao lado do botão de WhatsApp
    O relógio começa quando o cartão aparece na tela da pessoa (o resultado é longo; assim ela não perde o tempo rolando).
    ============================================================================ */
+let urgSel = true;
+$$('#alt-urgencia button').forEach(b => b.addEventListener('click', () => {
+  urgSel = b.dataset.v === '1';
+  $$('#alt-urgencia button').forEach(x => { const on = x === b; x.classList.toggle('ativa', on); x.setAttribute('aria-checked', on ? 'true' : 'false'); });
+}));
+/* os 3 botões verdes de WhatsApp ganham o mesmo ícone */
+(function(){
+  const ref = document.querySelector('#btn-zap-resultado svg'); if(!ref) return;
+  ['#btn-zap-obrigada', '#btn-zap-expirou'].forEach(sel => { const b = $(sel); if(b && !b.querySelector('svg')) b.insertAdjacentHTML('afterbegin', ref.outerHTML); });
+})();
 const URG_SEGUNDOS = 60;
 const URG_PRIM = (CONFIG.terapeuta || '').split(' ')[0];
 let urgTimer = null;
@@ -1389,8 +1434,9 @@ const urgTextoAntes = () => '<b>O que você sentiu ao responder está vivo agora
 const urgTextoDepois = () => '<b>A porta continua aberta.</b> A ' + URG_PRIM + ' está pronta para te receber: toque no botão e comece a sua conversa.';
 function urgInicio(id){
   if(id !== '#tela-resultado' && id !== '#tela-obrigada') return;
+  const velho = $('#urg-card'); if(velho) velho.remove(); clearInterval(urgTimer);        // nunca sobra um cartão de uma rodada anterior
+  if(estado.urgencia === false) return;                       // esta pessoa recebeu um código SEM cronômetro; o botão segue piscando
   const btn = $(id === '#tela-resultado' ? '#btn-zap-resultado' : '#btn-zap-obrigada'); if(!btn) return;
-  const velho = $('#urg-card'); if(velho) velho.remove();
   const card = document.createElement('div');
   card.id = 'urg-card'; card.className = 'urg'; card.setAttribute('role', 'group'); card.setAttribute('aria-label', 'Convite para falar agora');
   card.innerHTML = '<div class="urg-topo"><span class="urg-rot">Fale com a ' + URG_PRIM + ' agora</span><b class="urg-num" id="urg-num">01:00</b></div>'
@@ -1413,6 +1459,13 @@ function urgTick(){
   $('#urg-card').classList.toggle('fim', resta === 0);
   if(resta === 0) clearInterval(urgTimer);
 }
+/* ---- capa: o brilho do botão usa a cor do próprio botão ---- */
+(function(){
+  try{
+    const hex = getComputedStyle(document.documentElement).getPropertyValue('--ardosia').trim().replace('#','');
+    if(/^[0-9a-fA-F]{6}$/.test(hex)) document.documentElement.style.setProperty('--pulso-rgb', [0,2,4].map(i => parseInt(hex.substr(i,2),16)).join(','));
+  }catch(e){}
+})();
 function prepararOrientacao(){
   compAvisoOrient();
   $('#orient-passo3').innerHTML = estado.mostrarResultado
@@ -1764,7 +1817,7 @@ function mensagemConvite(primeiro, codigo, mostrar){
     '',
     'Separei um presente de cuidado para você: o Teste de Travas Mentais. Em poucos minutos ele mostra o que pode estar segurando o seu avanço hoje.',
     '',
-    'É só tocar no link abaixo. O seu código já vai preenchido, você só precisa entrar:',
+    'É só tocar no link abaixo. Ao abrir, o seu código já vai preenchido: é só tocar em “Fazer o teste agora”:',
     linkDoTeste(codigo),
     '',
     'Se o link não abrir direto, o seu código é: *' + codigo + '*',
@@ -1786,7 +1839,7 @@ $('#btn-gerar').addEventListener('click', async ()=>{
   for(let i=0; i<qtd; i++){
     let codigo = novoCodigo();
     if(!modoLocal()){
-      const r = await api(ACOES.gerarCodigo,{codigo, cliente:nomeCli, whatsapp:zapCli, mostrar});
+      const r = await api(ACOES.gerarCodigo,{codigo, cliente:nomeCli, whatsapp:zapCli, mostrar, urgencia:urgSel});
       if(!r || r.ok === false){
         $('#caixa-codigo').innerHTML = '<div class="aviso ver">Não consegui gerar o código agora. Saia da área, entre de novo e tente outra vez.</div>';
         break;
@@ -1794,7 +1847,7 @@ $('#btn-gerar').addEventListener('click', async ()=>{
       codigo = r.codigo;
     }else{
       const lista = ler(CHAVE_CODIGOS, []);
-      lista.unshift({codigo, cliente:nomeCli, whatsapp:zapCli, criadoEm:hoje(), usado:false, mostrarResultado:mostrar});
+      lista.unshift({codigo, cliente:nomeCli, whatsapp:zapCli, criadoEm:hoje(), usado:false, mostrarResultado:mostrar, urgencia:urgSel});
       guardar(CHAVE_CODIGOS, lista);
     }
     gerados.push(codigo);
@@ -1802,7 +1855,7 @@ $('#btn-gerar').addEventListener('click', async ()=>{
   b.disabled = false; b.textContent = 'Gerar código';
   if(!gerados.length) return;
 
-  const textoVis = mostrar ? 'A cliente vê o resultado no final.' : 'Só você vê o resultado.';
+  const textoVis = (mostrar ? 'A cliente vê o resultado no final.' : 'Só você vê o resultado.') + (urgSel ? ' Cronômetro de 60 s ligado.' : ' Sem cronômetro de 60 s.');
   if(gerados.length === 1){
     const codigo = gerados[0];
     const primeiro = nomeCli ? nomeCli.split(' ')[0] : '';
